@@ -14,8 +14,7 @@ namespace SuperMarketSystem.Data
         {
         }
 
-        public virtual DbSet<Admin> Admins { get; set; }
-
+        public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public virtual DbSet<Bill> Bills { get; set; }
 
         public virtual DbSet<Category> Categories { get; set; }
@@ -28,10 +27,11 @@ namespace SuperMarketSystem.Data
 
         public virtual DbSet<Rate> Rates { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=DESKTOP-74Q1NN4;Initial Catalog=SystemMarket;User ID=sa;Password=Hoang2k3.;TrustServerCertificate=True;Trusted_Connection=true");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //    //optionsBuilder.UseSqlServer("Server=DESKTOP-74Q1NN4;Initial Catalog=SystemMarket;User ID=sa;Password=Hoang2k3.;TrustServerCertificate=True;Trusted_Connection=true");
+        //    optionsBuilder.UseSqlServer("Server=LAPTOP-F38HNCQS;Initial Catalog=SystemMarket;User ID=sa;Password=123456;TrustServerCertificate=True;Trusted_Connection=true");
+        //}
     }
 }
