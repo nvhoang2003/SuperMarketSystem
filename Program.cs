@@ -2,23 +2,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
-using SuperMarketSystem.Models;
 using SuperMarketSystem.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//builder.Services.AddDbContext<DataContext>();
+
 builder.Services.AddDbContext<MyDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// Add default Identity check email to login
-
-//builder.Services.AddDefaultIdentity<ApplicationUser>(
-//    options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<MyDBContext>();
 
 // Add Identity with role
 
@@ -37,15 +32,15 @@ builder.Services.AddIdentityCore<IdentityUser>(
 builder.Services.Configure<SecurityStampValidatorOptions>(o =>
                    o.ValidationInterval = TimeSpan.FromMinutes(1));
 
-// Cấu hình quyền truy cập vào các trang chi tiết
-//builder.Services.AddRazorPages(options =>
-//{
-//    options.Conventions.AuthorizePage("/Contact");
-//    options.Conventions.AuthorizeFolder("/Private");
-//    options.Conventions.AllowAnonymousToPage("/Private/PublicPage");
-//    options.Conventions.AllowAnonymousToFolder("/Private/PublicPages");
-//});
-builder.Services.AddRazorPages();
+//Cấu hình quyền truy cập vào các trang chi tiết
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizePage("/Guest");
+    options.Conventions.AuthorizePage("/Admin");
+    options.Conventions.AuthorizePage("/Customer");
+    options.Conventions.AllowAnonymousToPage("/Guest");
+});
+//builder.Services.AddRazorPages();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Default SignIn settings.
@@ -70,30 +65,36 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false; //	Yêu cầu mỗi người dùng phải có một email duy nhất.
 });
 // Sets the default scheme to cookies and googles
-builder.Services.AddAuthentication()
-            .AddCookie(options =>
-            {
-                options.AccessDeniedPath = "/account/denied";
-                options.LoginPath = "/account/login";
-            });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        options.Cookie.Name = "SupperMarketCookie";
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        options.LoginPath = "/Identity/Account/Login";
+        options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+        options.SlidingExpiration = true;
+    });
 // Thêm xác thực bằng google nếu cần
-            //.AddGoogle(googleOptions =>
-            //{
-            //    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-            //    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-            //});
+//.AddGoogle(googleOptions =>
+//{
+//    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+//    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+//});
 
-builder.Services.ConfigureApplicationCookie(options =>
+
+// add session
+builder.Services.AddSession(options =>
 {
-    // Cookie settings
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.Cookie.Name = "SupperMarketCookie";
+    options.Cookie.Name = "MyApp.Session";
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-    options.LoginPath = "/Identity/Account/Login";
-    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-    options.SlidingExpiration = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.IsEssential = true;
 });
+
+//add authorization
 builder.Services.AddAuthorization(options =>
 {
 options.AddPolicy("AdminPolicy", policy =>
@@ -103,6 +104,14 @@ options.AddPolicy("CustomerPolicy", policy =>
 options.AddPolicy("GuestPolicy", policy =>
       policy.RequireRole("Guest"));
 });
+
+//builder.Services.AddControllers(config =>
+//{
+//    var policy = new AuthorizationPolicyBuilder()
+//        .RequireAuthenticatedUser()
+//        .Build();
+//    config.Filters.Add(new AuthorizeFilter(policy));
+//});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -120,7 +129,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.MapRazorPages();
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    Secure = CookieSecurePolicy.Always
+});
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
