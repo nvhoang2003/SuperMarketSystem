@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
+using SuperMarketSystem.Models;
 using SuperMarketSystem.Data;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -13,15 +15,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Add default Identity check email to login
-builder.Services.AddDefaultIdentity<ApplicationUser>(
-    options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<MyDBContext>();
+
+//builder.Services.AddDefaultIdentity<ApplicationUser>(
+//    options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<MyDBContext>();
+
 // Add Identity with role
 
-//builder.Services.AddIdentityCore<IdentityUser>(
-//    options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddRoles<IdentityRole>()
-//    .AddEntityFrameworkStores<MyDbContext>();
+builder.Services.AddIdentityCore<IdentityUser>(
+    options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<MyDBContext>();
 
 // Add Identity using Providers to check login
 
@@ -31,10 +35,17 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(
 // Force Identity's security stamp to be validated every minute.
 // Hệ thống tự động check tài khoản mỗi phút 1 lần nếu có thay đổi về tài khoản sẽ thực hiện đăng xuất. 
 builder.Services.Configure<SecurityStampValidatorOptions>(o =>
-                   o.ValidationInterval = TimeSpan.FromMinutes(1)); 
+                   o.ValidationInterval = TimeSpan.FromMinutes(1));
 
+// Cấu hình quyền truy cập vào các trang chi tiết
+//builder.Services.AddRazorPages(options =>
+//{
+//    options.Conventions.AuthorizePage("/Contact");
+//    options.Conventions.AuthorizeFolder("/Private");
+//    options.Conventions.AllowAnonymousToPage("/Private/PublicPage");
+//    options.Conventions.AllowAnonymousToFolder("/Private/PublicPages");
+//});
 builder.Services.AddRazorPages();
-
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Default SignIn settings.
@@ -82,6 +93,15 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
     options.SlidingExpiration = true;
+});
+builder.Services.AddAuthorization(options =>
+{
+options.AddPolicy("AdminPolicy", policy =>
+      policy.RequireRole("Admin", "Customer", "Guest"));
+options.AddPolicy("CustomerPolicy", policy =>
+      policy.RequireRole("Customer", "Guest"));
+options.AddPolicy("GuestPolicy", policy =>
+      policy.RequireRole("Guest"));
 });
 var app = builder.Build();
 
