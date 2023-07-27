@@ -33,5 +33,20 @@ namespace SuperMarketSystem.Data
         //    //optionsBuilder.UseSqlServer("Server=DESKTOP-74Q1NN4;Initial Catalog=SystemMarket;User ID=sa;Password=Hoang2k3.;TrustServerCertificate=True;Trusted_Connection=true");
         //    optionsBuilder.UseSqlServer("Server=LAPTOP-F38HNCQS;Initial Catalog=SystemMarket;User ID=sa;Password=123456;TrustServerCertificate=True;Trusted_Connection=true");
         //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Category>().HasData
+                (
+                    new Category { },
+                    new Category { },
+                    new Category { }
+                );
+            modelBuilder.Entity<Product>().HasData
+                (
+                    new Product { },
+                    new Product { },
+                    new Product { }
+                );
+        }
     }
 }

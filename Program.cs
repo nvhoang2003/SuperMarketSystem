@@ -12,6 +12,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<DataContext>()
         .AddDefaultTokenProviders();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
