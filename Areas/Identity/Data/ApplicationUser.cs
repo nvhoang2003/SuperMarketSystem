@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 public class ApplicationUser : IdentityUser
 {
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
     public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
     public virtual ICollection<ApplicationUserLogin> Logins { get; set; }
     public virtual ICollection<ApplicationUserToken> Tokens { get; set; }
@@ -10,6 +13,7 @@ public class ApplicationUser : IdentityUser
 
 public class ApplicationRole : IdentityRole
 {
+    public string? Description { get; set; }
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
     public virtual ICollection<ApplicationRoleClaim> RoleClaims { get; set; }
 }
