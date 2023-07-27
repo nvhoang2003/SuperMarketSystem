@@ -1,13 +1,12 @@
-﻿using DataAccessLayer.DataObject;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SuperMarketSystem.Data;
 
-public class MyDbContext : IdentityDbContext<ApplicationUser>
+public class MyDBContext : IdentityDbContext<ApplicationUser>
 {
-    public MyDbContext(DbContextOptions<MyDbContext> options)
+    public MyDBContext(DbContextOptions<MyDBContext> options)
         : base(options)
     {
     }

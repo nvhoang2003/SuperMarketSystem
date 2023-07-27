@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SuperMarketSystem.Data;
 using Microsoft.AspNetCore.Authentication.Google;
-
-
-
+using SuperMarketSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -13,13 +10,13 @@ var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<DataContext>();
-builder.Services.AddDbContext<MyDbContext>(options =>
+builder.Services.AddDbContext<MyDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+// Add default Identity check email to login
 builder.Services.AddDefaultIdentity<ApplicationUser>(
     options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<MyDbContext>();
-// Add default Identity check email to login
+    .AddEntityFrameworkStores<MyDBContext>();
+// Add Identity with role
 
 //builder.Services.AddIdentityCore<IdentityUser>(
 //    options => options.SignIn.RequireConfirmedAccount = true)
