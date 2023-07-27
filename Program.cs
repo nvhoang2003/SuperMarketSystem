@@ -10,9 +10,10 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<DataContext>();
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<DataContext>()
-        .AddDefaultTokenProviders();
+builder.Services.AddIdentityCore<IdentityUser>(options =>
+                                options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<DataContext>();
+builder.Services.AddRazorPages();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
