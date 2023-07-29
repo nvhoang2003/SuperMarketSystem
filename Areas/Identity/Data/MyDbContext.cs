@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SuperMarketSystem.DTOs;
+using DataAccessLayer.DataObject;
 
 namespace SuperMarketSystem.Data;
 
@@ -10,6 +12,18 @@ public class MyDBContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+
+    public virtual DbSet<Bill> Bills { get; set; }
+
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<Customer> Customers { get; set; }
+
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<Product> Products { get; set; }
+
+    public virtual DbSet<Rate> Rates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

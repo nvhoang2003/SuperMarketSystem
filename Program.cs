@@ -9,11 +9,28 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Services.AddAutoMapper(typeof(Program));
+
+DotNetEnv.Env.Load(); // Đọc dữ liệu từ tệp .env
+
+// Cấu hình ứng dụng
+var envConfig = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
+    .Build();
+
+// Lấy connection string từ biến môi trường
+var connectionString = envConfig["CONNECTION_STRING"];
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(connectionString));
+// Add default Identity check email to login
+
+//builder.Services.AddDefaultIdentity<ApplicationUser>(
+//    options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<MyDBContext>();
 
 // Add Identity with role
 
