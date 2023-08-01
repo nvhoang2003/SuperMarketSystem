@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 
 public class ApplicationUser : IdentityUser
 {
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
+    [PersonalData]
+    [Column(TypeName = "nvarchar(100)")]
+    public string Firstname { get; set; }
+    [PersonalData]
+    [Column(TypeName = "nvarchar(100)")]
+    public string LastName { get; set; }
     public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
     public virtual ICollection<ApplicationUserLogin> Logins { get; set; }
     public virtual ICollection<ApplicationUserToken> Tokens { get; set; }

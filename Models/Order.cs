@@ -15,5 +15,5 @@ public partial class Order
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
-    public Customer Customer { get; set; }
+    public virtual Customer Customer { get; set; }
 }

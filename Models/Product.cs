@@ -17,7 +17,7 @@ public partial class Product
 
     public float TotalAmount { get; set; }
 
-    public Category Category { get; set; }
+    public virtual Category Category { get; set; }
 
     public virtual ICollection<Rate> Rates { get; set; } = new List<Rate>();
 }

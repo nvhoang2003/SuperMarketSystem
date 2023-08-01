@@ -17,7 +17,7 @@ public partial class Bill
 
     public DateTime CreditCardExpiry { get; set; }
 
-    public Customer Customer { get; set; }
+    public virtual Customer Customer { get; set; }
 
-    public Order Order { get; set; }
+    public virtual Order Order { get; set; }
 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.Google;
 using SuperMarketSystem.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SuperMarketSystem.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -26,29 +28,50 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
         options.UseSqlServer(connectionString));
-// Add default Identity check email to login
+//Add default Identity check email to login
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<MyDBContext>()
+        .AddSignInManager<SignInManager<ApplicationUser>>();
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+//        .AddEntityFrameworkStores<MyDBContext>()
+//        .AddSignInManager<SignInManager<ApplicationUser>>();
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(
-//    options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<MyDBContext>();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//        .AddEntityFrameworkStores<MyDBContext>()
+//        .AddDefaultTokenProviders();
+//Add Identity SignIn
+
 
 // Add Identity with role
 
-builder.Services.AddIdentityCore<IdentityUser>(
-    options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<MyDBContext>();
+//builder.Services.AddIdentityCore<IdentityUser>(
+//    options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddRoles<IdentityRole>()
+//    .AddEntityFrameworkStores<MyDBContext>();
 
 // Add Identity using Providers to check login
 
 //builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 //    .AddDefaultTokenProviders();
 
+//Đăng kí send email
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 // Force Identity's security stamp to be validated every minute.
-// Hệ thống tự động check tài khoản mỗi phút 1 lần nếu có thay đổi về tài khoản sẽ thực hiện đăng xuất. 
+// Hệ thống tự động check tài khoản mỗi phút 1 lần nếu có thay đổi về tài khoản sẽ thực hiện đăng xuất.
+
+//Thay đổi thời gian chờ email và hoạt động 
 builder.Services.Configure<SecurityStampValidatorOptions>(o =>
                    o.ValidationInterval = TimeSpan.FromMinutes(1));
 
+//Thay đổi tất cả tuổi thọ của mã thông báo bảo vệ dữ liệu
+builder.Services.ConfigureApplicationCookie(o => {
+    o.ExpireTimeSpan = TimeSpan.FromDays(5);
+    o.SlidingExpiration = true;
+});
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+       o.TokenLifespan = TimeSpan.FromHours(3));
 //Cấu hình quyền truy cập vào các trang chi tiết
 builder.Services.AddRazorPages(options =>
 {
