@@ -7,23 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.DataObject;
 using SuperMarketSystem.Data;
+using AutoMapper;
+using SuperMarketSystem.DTOs;
 
 namespace SuperMarketSystem.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly MyDBContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(MyDBContext context)
+        public CategoriesController(MyDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
+            var dbCategory = await _context.Categories.Select(u => _mapper.Map<CategoryDTO>(u)).ToListAsync();
+
               return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
+                          View(dbCategory) :
                           Problem("Entity set 'MyDBContext.Categories'  is null.");
         }
 
@@ -37,12 +43,15 @@ namespace SuperMarketSystem.Controllers
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+
+            CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
+
+            if (categoryDTO == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(categoryDTO);
         }
 
         // GET: Categories/Create
@@ -56,15 +65,16 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
+        public async Task<IActionResult> Create( CreateCategoryDTO createCategoryDTO)
         {
             if (ModelState.IsValid)
             {
+                Category category = _mapper.Map<Category>(createCategoryDTO);
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(createCategoryDTO);
         }
 
         // GET: Categories/Edit/5
@@ -75,12 +85,17 @@ namespace SuperMarketSystem.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
+
+            if (categoryDTO == null)
             {
                 return NotFound();
             }
-            return View(category);
+
+            return View(categoryDTO);
         }
 
         // POST: Categories/Edit/5
@@ -88,34 +103,18 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
+        public async Task<IActionResult> Edit( CategoryDTO categoryDTO)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                Category category = _mapper.Map<Category>(categoryDTO);
+                _context.Update(category);
+                await _context.SaveChangesAsync();
+            
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(categoryDTO);
         }
 
         // GET: Categories/Delete/5
@@ -128,12 +127,15 @@ namespace SuperMarketSystem.Controllers
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+
+            CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
+
+            if (categoryDTO == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(categoryDTO);
         }
 
         // POST: Categories/Delete/5
