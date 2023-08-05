@@ -28,9 +28,9 @@ namespace SuperMarketSystem.Controllers
         {
             var dbCategory = await _context.Categories.Select(u => _mapper.Map<CategoryDTO>(u)).ToListAsync();
 
-              return _context.Categories != null ? 
-                          View(dbCategory) :
-                          Problem("Entity set 'MyDBContext.Categories'  is null.");
+            return _context.Categories != null ?
+                        View(dbCategory) :
+                        Problem("Entity set 'MyDBContext.Categories'  is null.");
         }
 
         // GET: Categories/Details/5
@@ -65,7 +65,7 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( CreateCategoryDTO createCategoryDTO)
+        public async Task<IActionResult> Create(CreateCategoryDTO createCategoryDTO)
         {
             if (ModelState.IsValid)
             {
@@ -111,12 +111,13 @@ namespace SuperMarketSystem.Controllers
                 Category category = _mapper.Map<Category>(categoryDTO);
                 _context.Update(category);
                 await _context.SaveChangesAsync();
-            
+
                 return RedirectToAction(nameof(Index));
             }
             return View(categoryDTO);
         }
 
+        [HttpGet]
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -152,14 +153,14 @@ namespace SuperMarketSystem.Controllers
             {
                 _context.Categories.Remove(category);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

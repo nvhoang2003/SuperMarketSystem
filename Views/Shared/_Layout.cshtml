@@ -7,24 +7,24 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/sb-admin-2.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/SuperMarketSystem.styles.css" asp-append-version="true" />
 </head>
 <body>
     <div id="wrapper">
         @await Html.PartialAsync("_Sidebar")
-
-        <div id="content-wrapper" class="d-flex flex-column">
-            <main role="main" class="container-fluid py-3">
+            <main role="main" class="container-fluid">
                 @RenderBody()
-            </main>
-            <footer role="main" class="sticky-footer bg-white custom-footer">
-                <div>
-                    <div class="text-center">
+                <footer role="main" class="sticky-footer custom-footer">
+                 
                         &copy; 2023 - SuperMarketSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </div>
-                </div>
-            </footer>
-        </div>
+                  
+                </footer>
+            </main>
+          
+        
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

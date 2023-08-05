@@ -35,6 +35,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Views\Admin\" />
+    <Folder Include="wwwroot\Image\" />
   </ItemGroup>
 
 </Project>
