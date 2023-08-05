@@ -1,5 +1,8 @@
-﻿using System;
+﻿using SuperMarketSystem.Models;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.DataObject;
 
@@ -17,7 +20,16 @@ public partial class Product
 
     public float TotalAmount { get; set; }
 
+    public int BrandId { get; set; }
+
+    public string ImageName { get; set; }
+
+    [NotMapped]
+    public IFormFile ImageFile { get; set; }
+
     public virtual Category Category { get; set; }
+
+    public virtual Brand Brand { get; set; }
 
     public virtual ICollection<Rate> Rates { get; set; } = new List<Rate>();
 }
