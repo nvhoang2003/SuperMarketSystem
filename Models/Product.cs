@@ -18,14 +18,9 @@ public partial class Product
 
     public float UnitCost { get; set; }
 
-    public float TotalAmount { get; set; }
-
     public int BrandId { get; set; }
 
-    public string ImageName { get; set; }
-
-    [NotMapped]
-    public IFormFile ImageFile { get; set; }
+    public virtual ICollection<Image> Image { get; set; } = new List<Image>();
 
     public virtual Category Category { get; set; }
 

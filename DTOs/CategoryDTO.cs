@@ -11,7 +11,7 @@ namespace SuperMarketSystem.DTOs
 
         public string? Description { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Product> Products { get; set; }
     }
 
     public class CreateCategoryDTO

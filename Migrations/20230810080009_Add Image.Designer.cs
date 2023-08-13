@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuperMarketSystem.Data;
 
@@ -11,13 +12,15 @@ using SuperMarketSystem.Data;
 namespace SuperMarketSystem.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230810080009_Add Image")]
+    partial class AddImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -170,6 +173,9 @@ namespace SuperMarketSystem.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<float>("TotalAmount")
+                        .HasColumnType("real");
 
                     b.Property<float>("UnitCost")
                         .HasColumnType("real");
@@ -632,7 +638,7 @@ namespace SuperMarketSystem.Migrations
             modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
                 {
                     b.HasOne("DataAccessLayer.DataObject.Product", null)
-                        .WithMany("Image")
+                        .WithMany("ImageFile")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -722,7 +728,7 @@ namespace SuperMarketSystem.Migrations
 
             modelBuilder.Entity("DataAccessLayer.DataObject.Product", b =>
                 {
-                    b.Navigation("Image");
+                    b.Navigation("ImageFile");
 
                     b.Navigation("Rates");
                 });

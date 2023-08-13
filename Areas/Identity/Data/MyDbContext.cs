@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.DTOs;
 using DataAccessLayer.DataObject;
+using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Data;
 
@@ -14,6 +15,10 @@ public class MyDBContext : IdentityDbContext<ApplicationUser>
     }
 
     public virtual DbSet<Bill> Bills { get; set; }
+
+    public virtual DbSet<Brand> Brands { get; set; }
+
+    public virtual DbSet<Image> Images { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataAccessLayer.DataObject.Product>
+﻿@model IEnumerable<SuperMarketSystem.DTOs.ProductDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,12 +25,12 @@
                 @Html.DisplayNameFor(model => model.TotalAmount)
             </th>
             <th>
-               Image
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
-            <th>Action</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -49,10 +49,10 @@
                 @Html.DisplayFor(modelItem => item.TotalAmount)
             </td>
             <td>
-                <img decoding="async" src="@("~/image/"+item.ImageName)" asp-append-version="true" width="250px" height="250px" />
+                @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
+                @Html.DisplayFor(modelItem => item.Brand.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
