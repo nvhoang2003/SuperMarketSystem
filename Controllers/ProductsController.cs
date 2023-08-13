@@ -148,8 +148,8 @@ namespace SuperMarketSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO updateProductDTO)
         {
-            //try
-            //{
+            try
+            {
                 Product product = _mapper.Map<Product>(updateProductDTO);
                 product.Id = id; 
                 _context.Update(product);
@@ -180,13 +180,13 @@ namespace SuperMarketSystem.Controllers
                 }    
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id", updateProductDTO.BrandId);
-            //    ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", updateProductDTO.CategoryId);
-            //    return View(updateProductDTO);
-            //}
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id", updateProductDTO.BrandId);
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", updateProductDTO.CategoryId);
+                return View(updateProductDTO);
+            }
         }
 
         // GET: Products/Delete/5
