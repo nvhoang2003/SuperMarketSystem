@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.DTOs;
 using DataAccessLayer.DataObject;
+using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Data;
 
@@ -115,4 +116,6 @@ public class MyDBContext : IdentityDbContext<ApplicationUser>
             b.Property(t => t.Name).HasMaxLength(128);
         });
     }
+
+    public DbSet<SuperMarketSystem.Models.Brand> Brand { get; set; } = default!;
 }
