@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccessLayer.DataObject;
 using SuperMarketSystem.DTOs;
+using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem
 {
@@ -8,9 +9,7 @@ namespace SuperMarketSystem
     {
         public AutoMapperProfile() 
         {
-            CreateMap<UserDTO, ApplicationUser>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
-            CreateMap<CreateCategoryDTO, Category>().ReverseMap();
         }
     }
 }

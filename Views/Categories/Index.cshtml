@@ -7,7 +7,14 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
+    else
+    {
+        <span>You do not have permission to create new items.</span>
+    }
 </p>
 <table class="table">
     <thead>
@@ -30,6 +37,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

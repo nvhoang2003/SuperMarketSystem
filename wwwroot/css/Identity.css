@@ -1,0 +1,44 @@
+﻿.body {
+    background-color: #fff;
+    min-width: 1200px;
+    min-height: 100vh;
+
+}
+
+.background-color {
+    background-color: rgb(255, 235, 226);
+}
+.background-image {
+    background-image: url(&quot;https://down-vn.img.susercontent.com/file/sg-11134004-7qvcu-ljmk3k30gzfvf7&quot;);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.form-size {
+    height: 400px;
+    width: 400px;
+    margin: 0 auto;
+    min-height: 600px;
+    width: 1020px;
+    display: flex;
+    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
+}
+.space {
+    width: 60%;
+    justify-content: space-between;
+}
+.column {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex ;
+}
+.form-login {
+    display: block;
+    margin-top: 0em;
+    font-size: .875rem;
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+}

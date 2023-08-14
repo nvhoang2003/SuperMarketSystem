@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.DataObject;
 
-public partial class Customer
+public partial class Customer 
 {
     public int Id { get; set; }
 

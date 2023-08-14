@@ -1,0 +1,51 @@
+﻿@model SuperMarketSystem.ViewModels.ShoppingCartViewModel
+
+@{
+    var pageName = "Shopping Cart";
+    ViewData["Title"] = pageName;
+    Layout = "_Layout";
+}
+<h2>Your @pageName</h2>
+<h4>Here are the products in your shopping cart.</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Selected Quantity</th>
+            <th>Products</th>
+            <th class="text-right">Price</th>
+            <th class="text-right">TotalAmount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var line in Model.ShoppingCart.ShoppingCartItems)
+        {
+            <tr>
+                <td class="text-center"><a class="btn btn-default" asp-action="RemoveFromShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>-</b></a>          <b>@line.Quantity</b>          <a class="btn btn-default" asp-action="AddToShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>+</b></a></td>
+                <td class="text-left">@line.Product.Name</td>
+                <td class="text-right">@line.Product.UnitCost.ToString("c")</td>
+                <td class="text-right">
+                    @((line.Quantity * line.Product.UnitCost).ToString("c"))
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right">Total:</td>
+            <td class="text-right">
+                @Model.ShoppingCartTotal.ToString("c")
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div align="right">
+    @if (Model.ShoppingCartTotal > 0)
+    {
+        <a asp-controller="Orders" asp-action="Checkout" class="btn btn-primary">Check Out</a>
+    }
+</div>
+<div align="left">
+    <a asp-controller="ShoppingCart" asp-action="ClearCart" class="btn btn-danger">Clear Cart</a>
+</div>
+

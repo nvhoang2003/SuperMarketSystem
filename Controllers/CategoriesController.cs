@@ -9,40 +9,45 @@ using DataAccessLayer.DataObject;
 using SuperMarketSystem.Data;
 using AutoMapper;
 using SuperMarketSystem.DTOs;
+using SuperMarketSystem.Repositories.Interfaces;
+using SuperMarketSystem.Repositories.Implements;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SuperMarketSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class CategoriesController : Controller
     {
         private readonly MyDBContext _context;
         private readonly IMapper _mapper;
+        private readonly ICategoryRepository _categoryrepository;
 
-        public CategoriesController(MyDBContext context, IMapper mapper)
+        public CategoriesController(MyDBContext context, IMapper mapper, ICategoryRepository categoryrepository)
         {
             _context = context;
             _mapper = mapper;
+            _categoryrepository = categoryrepository;
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var dbCategory = await _context.Categories.Select(u => _mapper.Map<CategoryDTO>(u)).ToListAsync();
-
-              return _context.Categories != null ? 
-                          View(dbCategory) :
+            var category = await _categoryrepository.GetAll();
+            var categoryDto = _mapper.Map<IEnumerable<CategoryDTO>>(category);
+            return categoryDto != null ? 
+                          View(categoryDto) :
                           Problem("Entity set 'MyDBContext.Categories'  is null.");
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryrepository.GetById(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -55,38 +60,38 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Categories/Create
+        [Authorize(Policy = "AdminPolicy")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( CreateCategoryDTO createCategoryDTO)
+        public async Task<IActionResult> Create( CategoryDTO categoryDTO)
         {
             if (ModelState.IsValid)
             {
-                Category category = _mapper.Map<Category>(createCategoryDTO);
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                Category category = _mapper.Map<Category>(categoryDTO);
+                _categoryrepository.Add(category);
+                await _categoryrepository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(createCategoryDTO);
+            return View(categoryDTO);
         }
 
         // GET: Categories/Edit/5
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryrepository.GetById(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -99,8 +104,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( CategoryDTO categoryDTO)
@@ -109,8 +113,8 @@ namespace SuperMarketSystem.Controllers
             {
 
                 Category category = _mapper.Map<Category>(categoryDTO);
-                _context.Update(category);
-                await _context.SaveChangesAsync();
+                _categoryrepository.Update(category);
+                await _categoryrepository.SaveChangesAsync();
             
                 return RedirectToAction(nameof(Index));
             }
@@ -118,15 +122,15 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryrepository.GetById(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -134,32 +138,31 @@ namespace SuperMarketSystem.Controllers
             {
                 return NotFound();
             }
-
             return View(categoryDTO);
         }
 
         // POST: Categories/Delete/5
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Categories == null)
             {
-                return Problem("Entity set 'MyDBContext.Categories'  is null.");
+                return Problem("Entity set 'MyDBContext.Categories' is null.");
             }
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryrepository.GetById(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
+                _categoryrepository.Remove(category);
             }
             
-            await _context.SaveChangesAsync();
+            await _categoryrepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+          return _categoryrepository.Exists(id);
         }
     }
 }
