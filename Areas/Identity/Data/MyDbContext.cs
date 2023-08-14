@@ -120,4 +120,6 @@ public class MyDBContext : IdentityDbContext<ApplicationUser>
             b.Property(t => t.Name).HasMaxLength(128);
         });
     }
+
+    public DbSet<SuperMarketSystem.Models.Brand> Brand { get; set; } = default!;
 }
