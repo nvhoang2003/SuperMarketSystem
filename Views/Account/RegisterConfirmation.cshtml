@@ -1,0 +1,14 @@
+﻿@model SuperMarketSystem.ViewModels.AccountViewModel.RegisterConfirmationViewModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>Hello, @Model.Email!</p>
+    <p>Account confirmation is not required.</p>
+<p>
+    Please check your email to confirm your account.
+</p>
+<p>You can also open your Gmail by <a href="mailto:@Model.Email" target="_blank">clicking here</a>.</p>
+<p><a asp-action="Login">Back to login</a></p>

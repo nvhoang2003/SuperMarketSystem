@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.DTOs;
-using DataAccessLayer.DataObject;
 using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Data;

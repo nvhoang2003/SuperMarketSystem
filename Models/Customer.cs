@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataAccessLayer.DataObject;
+namespace SuperMarketSystem.Models;
 
-public partial class Customer 
+public partial class Customer
 {
     public int Id { get; set; }
 

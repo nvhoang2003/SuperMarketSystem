@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using DataAccessLayer.DataObject;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Tls;
 using SuperMarketSystem.Data;
+using SuperMarketSystem.Models;
 using SuperMarketSystem.Repositories.Interfaces;
 using System.Reflection.Metadata.Ecma335;
 

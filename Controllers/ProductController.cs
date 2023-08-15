@@ -7,7 +7,6 @@ using SuperMarketSystem.Repositories.Interfaces;
 using System.Data;
 using System;
 using SuperMarketSystem.Data;
-using DataAccessLayer.DataObject;
 using SuperMarketSystem.ViewModels;
 
 //namespace SuperMarketSystem.Controllers

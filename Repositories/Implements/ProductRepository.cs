@@ -1,7 +1,7 @@
-﻿using DataAccessLayer.DataObject;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.Data;
+using SuperMarketSystem.Models;
 using System;
 using System.Data;
 

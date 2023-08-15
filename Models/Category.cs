@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace DataAccessLayer.DataObject;
+namespace SuperMarketSystem.Models;
 
 public partial class Category
 {

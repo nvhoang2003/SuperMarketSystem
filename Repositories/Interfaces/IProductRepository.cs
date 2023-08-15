@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.DataObject;
+﻿using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Repositories.Interfaces
 {

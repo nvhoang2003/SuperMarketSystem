@@ -1,14 +1,13 @@
-﻿using SuperMarketSystem.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataAccessLayer.DataObject;
+namespace SuperMarketSystem.Models;
 
 public class Product
 {
-    public Product() 
+    public Product()
     {
         Rates = new HashSet<Rate>();
     }

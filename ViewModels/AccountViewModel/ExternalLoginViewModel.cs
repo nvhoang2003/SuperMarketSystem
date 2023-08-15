@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace SuperMarketSystem.ViewModels
+namespace SuperMarketSystem.ViewModels.AccountViewModel
 {
     public class ExternalLoginViewModel
     {
@@ -15,7 +15,7 @@ namespace SuperMarketSystem.ViewModels
         [TempData]
         public string ErrorMessage { get; set; }
         public class InputModel
-        {   
+        {
             [Required]
             [EmailAddress]
             [Display(Name = "Địa chỉ email")]

@@ -1,4 +1,4 @@
-﻿namespace SuperMarketSystem.Services
+﻿namespace SuperMarketSystem.Services.EmailService
 {
     public class AuthMessageSenderOptions
     {

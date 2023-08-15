@@ -1,5 +1,4 @@
-﻿using DataAccessLayer.DataObject;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SuperMarketSystem.Data;
 using System;

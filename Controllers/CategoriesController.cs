@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DataAccessLayer.DataObject;
 using SuperMarketSystem.Data;
 using AutoMapper;
 using SuperMarketSystem.DTOs;
 using SuperMarketSystem.Repositories.Interfaces;
 using SuperMarketSystem.Repositories.Implements;
 using Microsoft.AspNetCore.Authorization;
+using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Controllers
 {

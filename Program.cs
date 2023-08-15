@@ -16,7 +16,6 @@ using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DotNetEnv;
 using SuperMarketSystem.Services.EmailService;
-using SuperMarketSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

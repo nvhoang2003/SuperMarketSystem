@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.DataObject;
+﻿using SuperMarketSystem.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

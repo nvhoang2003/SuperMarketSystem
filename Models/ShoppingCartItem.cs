@@ -1,5 +1,4 @@
-﻿using DataAccessLayer.DataObject;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SuperMarketSystem.Models
 {

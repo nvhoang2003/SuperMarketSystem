@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Sprache;
-using SuperMarketSystem.ViewModels;
+using SuperMarketSystem.ViewModels.AccountViewModel;
 using System.Text.Encodings.Web;
 using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using DataAccessLayer.DataObject;
 using SuperMarketSystem.DTOs;
 using AutoMapper;
 using SuperMarketSystem.Services;
@@ -19,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MimeKit;
 using SuperMarketSystem.Services.EmailService;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 
 namespace SuperMarketSystem.Controllers
 {
@@ -105,7 +105,7 @@ namespace SuperMarketSystem.Controllers
                     await _emailSender.SendEmailAsync(model.Input.Email,  "Xác nhận địa chỉ email",
                         $"Hãy xác nhận địa chỉ email bằng cách <a href='{callbackUrl}'>Bấm vào đây</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedEmail)
+                    if (!_userManager.Options.SignIn.RequireConfirmedEmail)
                     {
                         // Nếu cấu hình phải xác thực email mới được đăng nhập thì chuyển hướng đến trang
                         // RegisterConfirmation - chỉ để hiện thông báo cho biết người dùng cần mở email xác nhận
@@ -123,7 +123,27 @@ namespace SuperMarketSystem.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+                
             }
+            return View(model);
+        }
+        #endregion
+        #region RegisterConfirmation
+        public async Task<IActionResult> RegisterConfirmation(string email)
+        {
+              if (email == null)
+            {
+                return RedirectToAction("Register", "Account");
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with email '{email}'.");
+            }
+            var model = new RegisterConfirmationViewModel()
+            {
+                Email = email,
+            };
             return View(model);
         }
         #endregion
@@ -154,6 +174,43 @@ namespace SuperMarketSystem.Controllers
             {
                 return View("ConfirmEmailFailure"); // Tạo view ConfirmEmailFailure để hiển thị thông báo thất bại
             }
+        }
+        #endregion
+        #region EmailChange     
+        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
+        {
+            if (userId == null || email == null || code == null)
+            {
+                return RedirectToAction("Manager","Account");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var model = new ConfirmEmailChangeViewModel();
+            var result = await _userManager.ChangeEmailAsync(user, email, code);
+            if (!result.Succeeded)
+            {
+                model.StatusMessage = "Error changing email.";
+                return View(model);
+            }
+
+            // In our UI email and user name are one and the same, so when we update the email
+            // we need to update the user name.
+            var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
+            if (!setUserNameResult.Succeeded)
+            {
+                model.StatusMessage = "Error changing user name.";
+                return View(model);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            model.StatusMessage = "Thank you for confirming your email change.";
+            return View(model);
         }
         #endregion
         #region LoginMethod
@@ -229,7 +286,6 @@ namespace SuperMarketSystem.Controllers
         }
 
         #endregion
-        [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
