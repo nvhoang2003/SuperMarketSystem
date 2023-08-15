@@ -10,6 +10,9 @@ namespace SuperMarketSystem
         public AutoMapperProfile() 
         {
             CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<CreateCategoryDTO, Category>().ReverseMap();
+            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<CreateProductDTO, Product>().ReverseMap();
         }
     }
 }

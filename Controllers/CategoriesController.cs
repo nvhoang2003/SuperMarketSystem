@@ -33,11 +33,11 @@ namespace SuperMarketSystem.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var category = await _categoryrepository.GetAll();
-            var categoryDto = _mapper.Map<IEnumerable<CategoryDTO>>(category);
-            return categoryDto != null ? 
-                          View(categoryDto) :
-                          Problem("Entity set 'MyDBContext.Categories'  is null.");
+            var dbCategory = await _context.Categories.Select(u => _mapper.Map<CategoryDTO>(u)).ToListAsync();
+
+            return _context.Categories != null ?
+                        View(dbCategory) :
+                        Problem("Entity set 'MyDBContext.Categories'  is null.");
         }
 
         // GET: Categories/Details/5
@@ -70,16 +70,16 @@ namespace SuperMarketSystem.Controllers
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( CategoryDTO categoryDTO)
+        public async Task<IActionResult> Create(CreateCategoryDTO createCategoryDTO)
         {
             if (ModelState.IsValid)
             {
-                Category category = _mapper.Map<Category>(categoryDTO);
+                Category category = _mapper.Map<Category>(createCategoryDTO);
                 _categoryrepository.Add(category);
                 await _categoryrepository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(categoryDTO);
+            return View(createCategoryDTO);
         }
 
         // GET: Categories/Edit/5
@@ -113,14 +113,15 @@ namespace SuperMarketSystem.Controllers
             {
 
                 Category category = _mapper.Map<Category>(categoryDTO);
-                _categoryrepository.Update(category);
-                await _categoryrepository.SaveChangesAsync();
-            
+                _context.Update(category);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(categoryDTO);
         }
 
+        [HttpGet]
         // GET: Categories/Delete/5
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int? id)
@@ -156,13 +157,13 @@ namespace SuperMarketSystem.Controllers
             {
                 _categoryrepository.Remove(category);
             }
-            
-            await _categoryrepository.SaveChangesAsync();
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
         private bool CategoryExists(int id)
         {
-          return _categoryrepository.Exists(id);
+            return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

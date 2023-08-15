@@ -12,8 +12,8 @@ using SuperMarketSystem.Data;
 namespace SuperMarketSystem.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230808063642_InitialCreateDB")]
-    partial class InitialCreateDB
+    [Migration("20230815015203_CreateBrand")]
+    partial class CreateBrand
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -230,12 +230,11 @@ namespace SuperMarketSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -244,13 +243,12 @@ namespace SuperMarketSystem.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<float>("TotalAmount")
-                        .HasColumnType("real");
-
                     b.Property<float>("UnitCost")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
 
@@ -420,6 +418,53 @@ namespace SuperMarketSystem.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SuperMarketSystem.Models.Brand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageId"));
+
+                    b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("SuperMarketSystem.Models.ShoppingCartItem", b =>
                 {
                     b.Property<string>("ItemId")
@@ -477,11 +522,19 @@ namespace SuperMarketSystem.Migrations
 
             modelBuilder.Entity("DataAccessLayer.DataObject.Product", b =>
                 {
+                    b.HasOne("SuperMarketSystem.Models.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataAccessLayer.DataObject.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Brand");
 
                     b.Navigation("Category");
                 });
@@ -556,6 +609,15 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
+                {
+                    b.HasOne("DataAccessLayer.DataObject.Product", null)
+                        .WithMany("Image")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SuperMarketSystem.Models.ShoppingCartItem", b =>
                 {
                     b.HasOne("DataAccessLayer.DataObject.Product", "Product")
@@ -588,6 +650,8 @@ namespace SuperMarketSystem.Migrations
 
             modelBuilder.Entity("DataAccessLayer.DataObject.Product", b =>
                 {
+                    b.Navigation("Image");
+
                     b.Navigation("Rates");
                 });
 #pragma warning restore 612, 618
