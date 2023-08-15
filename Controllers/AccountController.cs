@@ -60,7 +60,7 @@ namespace SuperMarketSystem.Controllers
             //_emailStore = GetEmailStore();            
         }
         #endregion
-        #region RegisterMethod
+        #region Register
         public async Task<IActionResult> Register()
         {
             // Đăng ký tài khoản theo dữ liệu form post tới
@@ -213,6 +213,138 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+        #region ResendEmailConfirm
+        [HttpGet]
+        public IActionResult ResendEmailConfirmation()
+        {
+            var model = new ResendEmailConfirmationViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                return View(model);
+            }
+
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Action(
+                     "ConfirmEmail",
+                     "Account",
+                     new { userId = user.Id, code = code },
+                     protocol: Request.Scheme);
+            await _emailSender.SendEmailAsync(
+                model.Email,
+                "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            return View(model);
+        }
+        #endregion
+        #region ResetPassword
+        [Authorize]
+        public IActionResult ResetPassword(string code = null)
+        {
+            if (code == null)
+            {
+                return BadRequest("A code must be supplied for password reset.");
+            }
+            else
+            {
+                var model = new ResetPasswordViewModel();
+                model.Input = new ResetPasswordViewModel.InputModel
+                {
+                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                };
+                return View(model);
+            }
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await _userManager.FindByEmailAsync(model.Input.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction("ResetPasswordConfirmation","Account");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, model.Input.Code,  model.Input.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation","Account");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+        #endregion
+        #region ResetPasswordConfirm
+        [Authorize]
+        [HttpGet]
+        public IActionResult ResetPasswordConfirm()
+        {
+            var model = new ResetPasswordConfirmViewModel();
+            return View(model);
+        }
+        #endregion
+        #region ForgotPassword
+        public IActionResult ForgotPassword()
+        {
+            var model = new ForgotPasswordViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Input.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToAction("ForgotPasswordConfirmation","Account");
+                }
+                // For more information on how to enable account confirmation and password reset please
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action(
+                      "ResetPassword",
+                      "Account",
+                      new { userId = user.Id, code = code },
+                      protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(
+                    model.Input.Email,
+                    "Reset Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                return RedirectToAction("ForgotPasswordConfirmation","Account");
+            }
+            return View(model);
+        }
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            var model = new ForgotPasswordConfirmationViewModel();
+            return View(model);
+        }
+        #endregion
         #region LoginMethod
         [HttpGet]
         public async Task<IActionResult> Login()
@@ -272,8 +404,6 @@ namespace SuperMarketSystem.Controllers
             return RedirectToAction("Login", "Account");
         }
         #endregion
-        // Post yêu cầu login bằng dịch vụ ngoài
-        // Provider = Google, Facebook ... 
         #region ExternalLogin
         [HttpPost]
         [AllowAnonymous]
@@ -286,6 +416,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         #endregion
+        #region ExternalLoginCallback
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -365,6 +496,7 @@ namespace SuperMarketSystem.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
+        #endregion
     }
 }
 
