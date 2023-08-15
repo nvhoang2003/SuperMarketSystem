@@ -25,9 +25,9 @@ namespace SuperMarketSystem.Controllers
         // GET: Brands
         public async Task<IActionResult> Index()
         {
-            return _context.Brands != null ?
-                        View(await _context.Brands.ToListAsync()) :
-                        Problem("Entity set 'MyDBContext.Brand'  is null.");
+              return _context.Brands != null ? 
+                          View(await _context.Brands.ToListAsync()) :
+                          Problem("Entity set 'MyDBContext.Brand'  is null.");
         }
 
         // GET: Brands/Details/5
@@ -125,15 +125,21 @@ namespace SuperMarketSystem.Controllers
                     {
                         await brand.ImageFile.CopyToAsync(fileStream);
                     }
+                    _context.Update(brand);
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
-                    var productExisted = await _context.Products
-                                            .FirstOrDefaultAsync(m => m.Id == brand.Id);
-                    brand.ImageName = productExisted.Name;
+                    var nameExisted = _context.Brands.Where(m => m.Id == id).Select(c => c.ImageName).FirstOrDefault();
+
+                    brand.ImageName = nameExisted;
+                    _context.Update(brand);
+                    await _context.SaveChangesAsync();
                 }
-                _context.Update(brand);
-                await _context.SaveChangesAsync();
+                //_context.Attach(brand);
+                //_context.Entry(brand).State = EntityState.Modified;
+                ////_context.Update(brand);
+                //await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -182,7 +188,7 @@ namespace SuperMarketSystem.Controllers
 
         private bool BrandExists(int id)
         {
-            return (_context.Brands?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Brands?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
