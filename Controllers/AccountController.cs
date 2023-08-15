@@ -31,11 +31,15 @@ namespace SuperMarketSystem.Controllers
         private readonly ILogger<LoginViewModel> _loggerLogin;
         private readonly ILogger<RegisterViewModel> _loggerRegister;
         private readonly ILogger<ExternalLoginViewModel> _loggerExternalLogin;
+        private readonly ILogger<LoginWith2faViewModel> _loggerWith2fa;
         private readonly ILogger<LogoutViewModel> _loggerLogout;
+        private readonly ILogger<LoginWithRecoveryCodeModel> _loggerLoginWithRecoveryCode;
+        private readonly ILogger<LogoutModel> _loggerLockout;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailService _emailSender;
         private readonly IMapper _mapper;
+
         #endregion
         #region Cter
         public AccountController(UserManager<ApplicationUser> userManager,
@@ -44,6 +48,9 @@ namespace SuperMarketSystem.Controllers
                                 ILogger<RegisterViewModel> loggerRegister,
                                 ILogger<ExternalLoginViewModel> loggerExternalLogin,
                                 ILogger<LogoutViewModel> loggerLogout,
+                                ILogger<LoginWith2faViewModel> loggerLoginWith2fa,
+                                ILogger<LoginWithRecoveryCodeModel> loggerLoginWithRecoveryCode,
+                                ILogger<LogoutModel> loggerLockout,
                                 IUserStore<ApplicationUser> userStore,
                                 IEmailService emailSender,                              
                                  IMapper mapper)
@@ -54,10 +61,29 @@ namespace SuperMarketSystem.Controllers
             _loggerRegister = loggerRegister;
             _loggerExternalLogin = loggerExternalLogin;
             _loggerLogout = loggerLogout;
+            _loggerWith2fa = loggerLoginWith2fa;
+            _loggerLoginWithRecoveryCode = loggerLoginWithRecoveryCode;
+            _loggerLockout = loggerLockout;
             _emailSender = emailSender;
             _mapper = mapper;
             _userStore = userStore;
             //_emailStore = GetEmailStore();            
+        }
+        #endregion
+        #region
+        public IActionResult ManagerProfile()
+        {
+
+            var user = _userManager.GetUserAsync(User).Result;
+
+            var model = new ManageProfileViewModel
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+
+            return View(model);
         }
         #endregion
         #region Register
@@ -390,6 +416,124 @@ namespace SuperMarketSystem.Controllers
             }
 
             ModelState.AddModelError("", "Username or Password was invalid.");
+            return View(model);
+        }
+        #endregion
+        #region LoginWith2Fa
+        
+        public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+            var model = new LoginWith2faViewModel()
+            {
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            model.ReturnUrl = model.ReturnUrl ?? Url.Content("~/");
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            var authenticatorCode = model.Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, model.RememberMe, model.Input.RememberMachine);
+
+            var userId = await _userManager.GetUserIdAsync(user);
+
+            if (result.Succeeded)
+            {
+                _loggerWith2fa.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
+                return LocalRedirect(model.ReturnUrl);
+            }
+            else if (result.IsLockedOut)
+            {
+                _loggerWith2fa.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
+                return RedirectToAction("Lockout","Account");
+            }
+            else
+            {
+                _loggerWith2fa.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                return View(model);
+            }
+        }
+        #endregion
+        #region
+        public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+            var model = new LoginWithRecoveryCodeViewModel()
+            {
+                ReturnUrl = returnUrl,
+            };
+            return View(model);
+        }
+
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            var recoveryCode = model.Input.RecoveryCode.Replace(" ", string.Empty);
+
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+
+            var userId = await _userManager.GetUserIdAsync(user);
+
+            if (result.Succeeded)
+            {
+                _loggerLoginWithRecoveryCode.LogInformation("User with ID '{UserId}' logged in with a recovery code.", user.Id);
+                return LocalRedirect(model.ReturnUrl ?? Url.Content("~/"));
+            }
+            if (result.IsLockedOut)
+            {
+                _loggerLoginWithRecoveryCode.LogWarning("User account locked out.");
+                return RedirectToAction("Lockout","Account");
+            }
+            else
+            {
+                _loggerLoginWithRecoveryCode.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                return View(model);
+            }
+        }
+        #endregion
+        #region Lockout
+        public IActionResult Lockout()
+        {
+            var model = new LockoutViewModel();
             return View(model);
         }
         #endregion
