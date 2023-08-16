@@ -83,26 +83,31 @@ namespace SuperMarketSystem.Controllers
             _context.Add(product);
             await _context.SaveChangesAsync();
 
-            List<Image> imgs = new List<Image>();
+          
             string wwwRootPath = _hostEnvironment.WebRootPath;
-
-            foreach (var item in createProductDTO.ImageFile)
-            {
-                Image img = new Image();
-
-                string fileName = Path.GetFileNameWithoutExtension(item.FileName);
-                string extension = Path.GetExtension(item.FileName);
-                img.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
+            if(createProductDTO.ImageFile != null)
                 {
-                    await item.CopyToAsync(fileStream);
+                    List<Image> imgs = new List<Image>();
+                    foreach (var item in createProductDTO.ImageFile)
+                    {
+                        Image img = new Image();
+
+                        string fileName = Path.GetFileNameWithoutExtension(item.FileName);
+                        string extension = Path.GetExtension(item.FileName);
+                        img.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/Image/", fileName);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await item.CopyToAsync(fileStream);
+                        }
+                        img.ProductId = product.Id;
+                        imgs.Add(img);
+                        _context.Images.AddRange(imgs);
+                    }
                 }
-                img.ProductId = product.Id;
-                imgs.Add(img);
-            }
+           
             //Insert record
-            _context.Images.AddRange(imgs);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
             }
