@@ -143,11 +143,9 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy =>
-          policy.RequireRole("Admin", "Customer", "Guest"));
+          policy.RequireRole("AdminPolicy", "CustomerPolicy"));
     options.AddPolicy("CustomerPolicy", policy =>
-          policy.RequireRole("Customer", "Guest"));
-    options.AddPolicy("GuestPolicy", policy =>
-          policy.RequireRole("Guest"));
+          policy.RequireRole("Customer"));
 });
 // using Microsoft.AspNetCore.Identity;
 
@@ -155,13 +153,7 @@ builder.Services.Configure<PasswordHasherOptions>(option =>
 {
     option.IterationCount = 12000;
 });
-//builder.Services.AddControllers(config =>
-//{
-//    var policy = new AuthorizationPolicyBuilder()
-//        .RequireAuthenticatedUser()
-//        .Build();
-//    config.Filters.Add(new AuthorizeFilter(policy));
-//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -185,38 +177,40 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "Customer", "Guest" };
-    var services = scope.ServiceProvider;
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
-    }
-}
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    string email = "admin123@gmail.com";
-    string password = configuration["SeedUserPW"];
-    if (await userManager.FindByEmailAsync(email) == null)
-    {
-        var user = new ApplicationUser()
-        {
-            UserName = email,
-            Email = email,
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true,
-        };
-        var userResult = await userManager.CreateAsync(user, password);
+//Tao role và tai khoan adm neu chua co
 
-        if (userResult.Succeeded)
-        {
-            await userManager.AddToRoleAsync(user, "Admin");
-        }
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//    var roles = new[] { "Admin", "Customer" };
+//    var services = scope.ServiceProvider;
+//    foreach (var role in roles)
+//    {
+//        if (!await roleManager.RoleExistsAsync(role))
+//            await roleManager.CreateAsync(new IdentityRole(role));
+//    }
+//}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+//    string email = "admin123@gmail.com";
+//    string password = configuration["SeedUserPW"];
+//    if (await userManager.FindByEmailAsync(email) == null)
+//    {
+//        var user = new ApplicationUser()
+//        {
+//            UserName = email,
+//            Email = email,
+//            EmailConfirmed = true,
+//            PhoneNumberConfirmed = true,
+//        };
+//        var userResult = await userManager.CreateAsync(user, password);
+
+//        if (userResult.Succeeded)
+//        {
+//            await userManager.AddToRoleAsync(user, "Admin");
+//        }
+//    }
+//}
 
 app.Run();

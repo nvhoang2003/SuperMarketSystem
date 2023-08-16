@@ -23,70 +23,72 @@
 </head>
 <body style="visibility: visible;">
     <div id="main">
-        <nav class="navbar">
-            <div class="navcontrol">
-                <div class="d-flex align-items-center">
-                    <a class="nav-brand" href="/Home/Index">
-                        <svg class="logo" src="~/logo.png" height="50">
-                            <g fill-rule="evenodd">
-                                <path d="~/Logo.png">
-                                </path>
-                            </g>
-                        </svg>
-                    </a>
-                    <div class="title">Đăng Nhập</div>
+        <div>
+            <section></section>
+            <nav class="navbar">
+                <div class="navcontrol">
+                    <div class="d-flex align-items-center">
+                        <a class="nav-brand" href="/Home/Index">
+                            <svg class="logo" src="~/logo.png" height="50">
+                                <g fill-rule="evenodd">
+                                    <path d="~/Logo.png">
+                                    </path>
+                                </g>
+                            </svg>
+                        </a>
+                        <div class="title">Đăng Nhập</div>
+                    </div>
                 </div>
-            </div>
-            <a href="#" class="item" target="_blank" rel="noopener noreferrer">Bạn cần giúp đỡ?</a>
-        </nav>
-    </div>
-    <div class="body">
-        <div class="head-shadow">
-            <div class="background-color">
-                <div class="background-image">
+                <a href="#" class="item" target="_blank" rel="noopener noreferrer">Bạn cần giúp đỡ?</a>
+            </nav>
+        </div>
+        <div class="body">
+            <div class="head-shadow">
+                <div class="background-color">
+                    <div class="background-image">
                         <div class="space">
                             <div class="column">
-                              <form id="form" asp-action="Login" method="post">
-                                <div class="form-group">
-                                    <label asp-for="Input.Email" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="Input.Email" class="form-control" />
-                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                <form id="form" asp-action="Login" method="post">
+                                    <div class="form-group">
+                                        <label asp-for="Input.Email" class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <input asp-for="Input.Email" class="form-control" />
+                                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group">
-                                    <label asp-for="Input.Password" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="Input.Password" class="form-control" />
-                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    <div class="form-group">
+                                        <label asp-for="Input.Password" class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <input asp-for="Input.Password" class="form-control" />
+                                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="checkbox mb-3">
-                                    <label asp-for="Input.RememberMe" class="form-label">
-                                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                    </label>
-                                </div>
-                                <div>
-                                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                                </div>
-                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                                <input type="hidden" name="externalLogins" value="true" />
-                                <div>
-                                    <p>
-                                        <a id="forgot-password" href="ForgotPassword">Forgot your password?</a>
+                                    <div class="checkbox mb-3">
+                                        <label asp-for="Input.RememberMe" class="form-label">
+                                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                                    </div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                    <input type="hidden" name="externalLogins" value="true" />
+                                    <div>
+                                        <p>
+                                            <a id="forgot-password" href="ForgotPassword">Forgot your password?</a>
 
-                                    </p>
-                                    <p>
-                                        <a href="Register">Register as a new user</a>
-                                    </p>
-                                    <p>
-                                        <a id="resend-confirmation" href="ResendEmailConfirmation">Resend email confirmation</a>
-                                    </p>
+                                        </p>
+                                        <p>
+                                            <a href="Register">Register as a new user</a>
+                                        </p>
+                                        <p>
+                                            <a id="resend-confirmation" href="ResendEmailConfirmation">Resend email confirmation</a>
+                                        </p>
 
-                                </div>                      
-                        </form>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <div class="col-md-6 col-md-offset-2">
@@ -95,9 +97,9 @@
                                 <section>
                                     <h4>Sử dụng dịch vụ</h4>
                                     <hr />
-                            <form id="external-account" asp-action="ExternalLogin" method="post" class="form-horizontal">                                    
+                                    <form id="external-account" asp-action="ExternalLogin" method="post" class="form-horizontal">
                                         <div>
-                                          
+
                                             <p>
                                                 @foreach (var provider in Model.ExternalLogins)
                                                 {
@@ -121,20 +123,22 @@
                 </div>
             </div>
         </footer>
-        @section Scripts{
-            @RenderSection("Scripts", required: false)
-            <script>
-                $(function () {
-                    var current = location.pathname;
-                    $('.nav-tabs li a').each(function () {
-                        var $this = $(this);
-                        if (current.indexOf($this.attr('href')) !== -1) {
-                            $this.addClass('active');
-                        }
-                    })
-                })
-            </script>
-        }
+        </div>
     </div>
+
+    @section Scripts{
+        @RenderSection("Scripts", required: false)
+        <script>
+            $(function () {
+                var current = location.pathname;
+                $('.nav-tabs li a').each(function () {
+                    var $this = $(this);
+                    if (current.indexOf($this.attr('href')) !== -1) {
+                        $this.addClass('active');
+                    }
+                })
+            })
+        </script>
+    }
 </body>
 </html>

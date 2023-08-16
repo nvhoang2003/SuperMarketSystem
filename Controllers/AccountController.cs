@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 
 namespace SuperMarketSystem.Controllers
 {
-    [AllowAnonymous]
     public class AccountController : Controller
     {
         #region Fields
@@ -70,7 +69,8 @@ namespace SuperMarketSystem.Controllers
             //_emailStore = GetEmailStore();            
         }
         #endregion
-        #region
+        #region ManageProfile
+        [Authorize]
         public IActionResult ManagerProfile()
         {
 
@@ -87,6 +87,7 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region Register
+        [AllowAnonymous]
         public async Task<IActionResult> Register()
         {
             // Đăng ký tài khoản theo dữ liệu form post tới
@@ -100,6 +101,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -130,7 +132,7 @@ namespace SuperMarketSystem.Controllers
                     // Gửi email    
                     await _emailSender.SendEmailAsync(model.Input.Email,  "Xác nhận địa chỉ email",
                         $"Hãy xác nhận địa chỉ email bằng cách <a href='{callbackUrl}'>Bấm vào đây</a>.");
-
+                    await _userManager.AddToRoleAsync(user, "Customer");
                     if (!_userManager.Options.SignIn.RequireConfirmedEmail)
                     {
                         // Nếu cấu hình phải xác thực email mới được đăng nhập thì chuyển hướng đến trang
@@ -155,6 +157,7 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region RegisterConfirmation
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterConfirmation(string email)
         {
               if (email == null)
@@ -173,7 +176,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
-        #region Confirm Email
+        #region Confirm EmailChange
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -201,8 +204,9 @@ namespace SuperMarketSystem.Controllers
                 return View("ConfirmEmailFailure"); // Tạo view ConfirmEmailFailure để hiển thị thông báo thất bại
             }
         }
-        #endregion
-        #region EmailChange     
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
         {
             if (userId == null || email == null || code == null)
@@ -240,13 +244,17 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region ResendEmailConfirm
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult ResendEmailConfirmation()
         {
             var model = new ResendEmailConfirmationViewModel();
             return View(model);
         }
+
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationViewModel model)
         {
             if (!ModelState.IsValid)
@@ -296,8 +304,10 @@ namespace SuperMarketSystem.Controllers
                 return View(model);
             }
         }
-        [Authorize]
+
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -332,12 +342,15 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region ForgotPassword
+        [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             var model = new ForgotPasswordViewModel();
             return View(model);
         }
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
 
@@ -365,14 +378,17 @@ namespace SuperMarketSystem.Controllers
             }
             return View(model);
         }
+
+        [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
         {
             var model = new ForgotPasswordConfirmationViewModel();
             return View(model);
         }
         #endregion
-        #region LoginMethod
+        #region Login
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
             // Clear the existing external cookie to ensure a clean login process
@@ -386,6 +402,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -420,7 +437,7 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region LoginWith2Fa
-        
+        [Authorize]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
@@ -438,6 +455,8 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model)
         {
             if (!ModelState.IsValid)
@@ -477,7 +496,8 @@ namespace SuperMarketSystem.Controllers
             }
         }
         #endregion
-        #region
+        #region LoginWithRecoveryCode
+        [Authorize]
         public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
@@ -492,7 +512,9 @@ namespace SuperMarketSystem.Controllers
             };
             return View(model);
         }
-
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -531,6 +553,7 @@ namespace SuperMarketSystem.Controllers
         }
         #endregion
         #region Lockout
+        [AllowAnonymous]
         public IActionResult Lockout()
         {
             var model = new LockoutViewModel();
@@ -561,6 +584,7 @@ namespace SuperMarketSystem.Controllers
 
         #endregion
         #region ExternalLoginCallback
+        [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -597,6 +621,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
@@ -632,7 +657,7 @@ namespace SuperMarketSystem.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
-
+        [AllowAnonymous]
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)

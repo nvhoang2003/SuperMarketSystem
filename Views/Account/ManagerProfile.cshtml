@@ -1,9 +1,10 @@
-﻿@model ManageProfileViewModel
+﻿@model SuperMarketSystem.ViewModels.AccountViewModel.ManageProfileViewModel
 
 <h2>Manage Your Profile</h2>
 <ul>
+    <li><a asp-action="LoginWith2fa" asp-controller="Account">LoginWith2fa</a></li>
     <li><a asp-action="ResetPassword" asp-controller="Account">Change Password</a></li>
-   
+    <li><a asp-action="Index" asp-controller="Home">Back</a></li>
 </ul>
 <h2>Edit Profile</h2>
 <form asp-action="EditProfile" asp-controller="Account" method="post">
