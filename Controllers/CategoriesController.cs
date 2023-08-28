@@ -60,14 +60,14 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Categories/Create
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCategoryDTO createCategoryDTO)
@@ -83,7 +83,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Categories/Edit/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,7 +104,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Categories/Edit/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( CategoryDTO categoryDTO)
@@ -123,7 +123,7 @@ namespace SuperMarketSystem.Controllers
 
         [HttpGet]
         // GET: Categories/Delete/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,7 +143,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Categories/Delete/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

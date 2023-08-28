@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Controllers
 {
+   // [Authorize(Roles = "Admin")]
     public class BrandsController : Controller
     {
         private readonly MyDBContext _context;
@@ -21,7 +23,7 @@ namespace SuperMarketSystem.Controllers
             _hostEnvironment = hostEnvironment;
             _context = context;
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Brands
         public async Task<IActionResult> Index()
         {
@@ -30,6 +32,7 @@ namespace SuperMarketSystem.Controllers
                           Problem("Entity set 'MyDBContext.Brand'  is null.");
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Brands/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -49,6 +52,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Brands/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -59,6 +63,7 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageFile")] Brand brand)
         {
             try
@@ -85,6 +90,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Brands/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -105,6 +111,7 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageFile")] Brand brand)
         {
             if (id != brand.Id)
@@ -150,6 +157,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Brands/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -170,6 +178,7 @@ namespace SuperMarketSystem.Controllers
         // POST: Brands/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Brands == null)
