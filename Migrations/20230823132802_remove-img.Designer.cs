@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuperMarketSystem.Data;
 
@@ -11,9 +12,11 @@ using SuperMarketSystem.Data;
 namespace SuperMarketSystem.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230823132802_remove-img")]
+    partial class removeimg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +36,6 @@ namespace SuperMarketSystem.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -78,8 +78,6 @@ namespace SuperMarketSystem.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -243,22 +241,19 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Brand", b =>
@@ -277,9 +272,9 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -314,43 +309,47 @@ namespace SuperMarketSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreditCardExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreditCardNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
@@ -381,33 +380,22 @@ namespace SuperMarketSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("UserId", "RoleId");
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
 
-                    b.HasIndex("RoleId");
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
-                    b.ToTable("UserRoles", (string)null);
-                });
+                    b.Property<DateTime>("DateOfPurchase")
+                        .HasColumnType("datetime2");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasKey("Id");
 
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasIndex("CustomerId");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Product", b =>
@@ -418,29 +406,29 @@ namespace SuperMarketSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<float>("BillAmount")
-                        .HasColumnType("real");
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreditCardExpiry")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("CreditCardNumber")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<float>("UnitCost")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("BrandId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("Bills");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Rate", b =>
@@ -451,7 +439,7 @@ namespace SuperMarketSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -498,7 +486,7 @@ namespace SuperMarketSystem.Migrations
                     b.ToTable("ShoppingCartItems");
                 });
 
-            modelBuilder.Entity("SuperMarketSystem.Models.Category", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -507,7 +495,7 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SuperMarketSystem.Models.Customer", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("ApplicationUser", null)
                         .WithMany()
@@ -516,7 +504,7 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("ApplicationUser", null)
                         .WithMany()
@@ -525,7 +513,7 @@ namespace SuperMarketSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SuperMarketSystem.Models.Order", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -556,9 +544,18 @@ namespace SuperMarketSystem.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SuperMarketSystem.Models.Order", "Order")
+                        .WithMany("Bills")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Order");
                 });
 
-                  
             modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
                 {
                     b.HasOne("SuperMarketSystem.Models.Product", null)
@@ -575,13 +572,15 @@ namespace SuperMarketSystem.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Product", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("SuperMarketSystem.Models.Brand", "Brand")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -590,15 +589,10 @@ namespace SuperMarketSystem.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Rate", b =>
@@ -617,7 +611,7 @@ namespace SuperMarketSystem.Migrations
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Order");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.ShoppingCartItem", b =>
@@ -643,8 +637,6 @@ namespace SuperMarketSystem.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Rates");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Order", b =>

@@ -14,6 +14,7 @@ using System.Data;
 
 namespace SuperMarketSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         #region Fields
@@ -87,6 +88,7 @@ namespace SuperMarketSystem.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO createProductDTO)
         {
             try
@@ -159,6 +161,7 @@ namespace SuperMarketSystem.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO updateProductDTO)
         {
             try
@@ -233,6 +236,7 @@ namespace SuperMarketSystem.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Products == null)

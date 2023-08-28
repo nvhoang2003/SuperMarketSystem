@@ -52,4 +52,26 @@ namespace SuperMarketSystem.DTOs
         [NotMapped]
         public IFormFile ImageFile { get; set; }
     }
+
+    public class CustomerProductDTO
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+
+        public float UnitCost { get; set; }
+
+        public virtual Category Category { get; set; }
+
+        public virtual Brand Brand { get; set; }
+
+        public IEnumerable<string> ImageName { get; set; }
+
+        public int NumberOfOrder { get; set; }
+
+        public float RateStar { get; set; }
+
+        public virtual ICollection<Rate> Rates { get; set; } = new List<Rate>();
+    }
 }

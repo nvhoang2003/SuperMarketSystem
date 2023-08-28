@@ -1,0 +1,132 @@
+﻿@import url('customerside.css');
+
+:root {
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+    
+.bg-red {
+    background-color: #d0011b !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+html {
+    font-size: 14px;
+    font-family: var(--font-family-sans-serif) !important;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    //font-family: Arial, Helvetica, sans-serif;
+    font-family: Times, "Times New Roman", Georgia, serif;
+}
+
+.nav {
+    display: block;
+    background: linear-gradient(-180deg, #f53d2d, #f63);
+}
+
+.top-header, .center-header {
+    margin: 0 auto;
+    width: 75%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.vertical-tiles {
+    border-left: 1px solid #fff;
+    padding: 1px;
+    margin: 20px;
+    display: inline;
+}
+
+.active {
+    color: #fff;
+    text-decoration: none;
+}
+
+.center-header a {
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.center-header img {
+    width: 140px;
+}
+
+.center-header input[type="text"] {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+    width: 850px;
+    height: 40px;
+    border-radius: 3px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center;
+}
+
+.search-container form button {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+}
+
+.bottom-header {
+    display: flex;
+    justify-content: center;
+}
+
+.bottom-header a {
+    margin: 0px 75px 0 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.bottom-header a:hover {
+    color: black;
+}
+
+.display-fullwidth {
+    position: absolute;
+}
+
+.img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}

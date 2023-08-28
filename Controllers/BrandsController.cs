@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,24 +14,33 @@ namespace SuperMarketSystem.Controllers
 {
     public class BrandsController : Controller
     {
+        #region Fields
         private readonly MyDBContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+        #endregion
 
+        #region Constructor
         public BrandsController(MyDBContext context, IWebHostEnvironment hostEnvironment)
         {
             _hostEnvironment = hostEnvironment;
             _context = context;
         }
+        #endregion
 
+        #region Index
         // GET: Brands
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return _context.Brands != null ?
                         View(await _context.Brands.ToListAsync()) :
                         Problem("Entity set 'MyDBContext.Brand'  is null.");
         }
+        #endregion
 
+        #region Details
         // GET: Brands/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -47,16 +57,16 @@ namespace SuperMarketSystem.Controllers
 
             return View(brand);
         }
+        #endregion
 
+        #region Create
         // GET: Brands/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Brands/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageFile")] Brand brand)
@@ -83,8 +93,11 @@ namespace SuperMarketSystem.Controllers
                 return View(brand);
             }
         }
+        #endregion
 
+        #region Edit
         // GET: Brands/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -100,9 +113,7 @@ namespace SuperMarketSystem.Controllers
             return View(brand);
         }
 
-        // POST: Brands/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ImageFile")] Brand brand)
@@ -143,7 +154,11 @@ namespace SuperMarketSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
+
+        #region Delete
         // GET: Brands/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -162,6 +177,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Brands/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -179,10 +195,13 @@ namespace SuperMarketSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Exists
         private bool BrandExists(int id)
         {
             return (_context.Brands?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        #endregion
     }
 }

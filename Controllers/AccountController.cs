@@ -40,7 +40,8 @@ namespace SuperMarketSystem.Controllers
         private readonly IMapper _mapper;
 
         #endregion
-        #region Cter
+
+        #region Constructer
         public AccountController(UserManager<ApplicationUser> userManager,
                                  SignInManager<ApplicationUser> signInManager,
                                 ILogger<LoginViewModel> loggerLogin,
@@ -69,23 +70,7 @@ namespace SuperMarketSystem.Controllers
             //_emailStore = GetEmailStore();            
         }
         #endregion
-        #region ManageProfile
-        [Authorize]
-        public IActionResult ManagerProfile()
-        {
 
-            var user = _userManager.GetUserAsync(User).Result;
-
-            var model = new ManageProfileViewModel
-            {
-                UserId = user.Id,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-            };
-
-            return View(model);
-        }
-        #endregion
         #region Register
         [AllowAnonymous]
         public async Task<IActionResult> Register()
@@ -149,6 +134,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region RegisterConfirmation
         [AllowAnonymous]
         public async Task<IActionResult> RegisterConfirmation(string email)
@@ -169,6 +155,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region Confirm EmailChange
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -236,6 +223,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region ResendEmailConfirm
         [AllowAnonymous]
         [HttpGet]
@@ -279,6 +267,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region ResetPassword
         [Authorize]
         public IActionResult ResetPassword(string code = null)
@@ -325,6 +314,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region ResetPasswordConfirm
         [Authorize]
         [HttpGet]
@@ -334,6 +324,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region ForgotPassword
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -379,6 +370,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region Login
         [HttpGet]
         [AllowAnonymous]
@@ -429,6 +421,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region LoginWith2Fa
         [Authorize]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -489,6 +482,7 @@ namespace SuperMarketSystem.Controllers
             }
         }
         #endregion
+
         #region LoginWithRecoveryCode
         [Authorize]
         public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
@@ -545,6 +539,7 @@ namespace SuperMarketSystem.Controllers
             }
         }
         #endregion
+
         #region Lockout
         [AllowAnonymous]
         public IActionResult Lockout()
@@ -553,6 +548,7 @@ namespace SuperMarketSystem.Controllers
             return View(model);
         }
         #endregion
+
         #region Logout
         [Authorize]
         public async Task<IActionResult> Logout()
@@ -564,6 +560,7 @@ namespace SuperMarketSystem.Controllers
             return RedirectToAction("Login", "Account");
         }
         #endregion
+
         #region ExternalLogin
         [HttpPost]
         [AllowAnonymous]

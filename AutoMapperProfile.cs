@@ -12,6 +12,7 @@ namespace SuperMarketSystem
             CreateMap<CreateCategoryDTO, Category>().ReverseMap();
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<CreateProductDTO, Product>().ReverseMap();
+            CreateMap<Product, CustomerProductDTO>().ReverseMap();
         }
     }
 }
