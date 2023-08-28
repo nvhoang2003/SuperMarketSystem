@@ -236,9 +236,6 @@ namespace SuperMarketSystem.Migrations
                     b.Property<decimal>("BillAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("BillCode")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreditCardExpiry")
                         .HasColumnType("datetime2");
 
@@ -487,6 +484,9 @@ namespace SuperMarketSystem.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProductCode")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

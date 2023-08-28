@@ -9,8 +9,6 @@ public partial class Bill
     [Key]
     public int Id { get; set; }
 
-    public Guid BillCode { get; set; }
-
     public int OrderId { get; set; }
 
     public int CustomerId { get; set; }

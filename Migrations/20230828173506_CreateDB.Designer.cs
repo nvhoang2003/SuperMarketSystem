@@ -12,8 +12,8 @@ using SuperMarketSystem.Data;
 namespace SuperMarketSystem.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230828100725_CrateDB")]
-    partial class CrateDB
+    [Migration("20230828173506_CreateDB")]
+    partial class CreateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,9 +238,6 @@ namespace SuperMarketSystem.Migrations
 
                     b.Property<decimal>("BillAmount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("BillCode")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreditCardExpiry")
                         .HasColumnType("datetime2");
@@ -490,6 +487,9 @@ namespace SuperMarketSystem.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProductCode")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

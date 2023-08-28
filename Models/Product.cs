@@ -10,7 +10,8 @@ public class Product
 {
     [Key]
     public int Id { get; set; }
-    
+    public Guid ProductCode { get; set; }
+
     public string Name { get; set; }
 
     public int CategoryId { get; set; }
