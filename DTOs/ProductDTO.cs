@@ -1,4 +1,6 @@
-﻿using SuperMarketSystem.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SuperMarketSystem.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,12 +10,21 @@ namespace SuperMarketSystem.DTOs
     {
         public int Id { get; set; }
 
+        [StringLength(100, MinimumLength = 2)]
+        [RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
+        [DataType(DataType.Text)]
+        [Required]
         public string Name { get; set; }
 
         public int Quantity { get; set; }
 
+        [Range(0, 1000)]
+        [DataType(DataType.Currency)]
+        [Required]
+        [Precision(18, 2)]
         public float UnitCost { get; set; }
 
+        [DisplayName("Select Category")]
         public virtual Category Category { get; set; }
 
         public virtual Brand Brand { get; set; }

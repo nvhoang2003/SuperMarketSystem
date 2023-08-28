@@ -39,7 +39,7 @@ namespace SuperMarketSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var productResponse = await _context.Products.Include(p => p.Brand).
-                Include(p => p.Category).
+                Include(p => p.Categories).
                 Select(u => _mapper.Map<ProductDTO>(u)).
                 ToListAsync();
             return View(productResponse);
@@ -58,7 +58,7 @@ namespace SuperMarketSystem.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Category)
+                .Include(p => p.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -145,7 +145,7 @@ namespace SuperMarketSystem.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Category)
+                .Include(p => p.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -219,7 +219,7 @@ namespace SuperMarketSystem.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Brand)
-                .Include(p => p.Category)
+                .Include(p => p.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)

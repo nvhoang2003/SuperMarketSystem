@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.Data;
 using SuperMarketSystem.DTOs;
-using SuperMarketSystem.Models;
+using SuperMarketSystem.ViewModels;
 using System.Diagnostics;
 
 namespace SuperMarketSystem.Controllers
@@ -26,7 +26,7 @@ namespace SuperMarketSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var productResponse = await _context.Products.Where(u => u.Quantity > 0).Include(p => p.Brand).
-                Include(p => p.Category).
+                Include(p => p.Categories).
                 Select(u => _mapper.Map<CustomerProductDTO>(u)).
                 ToListAsync();
 
@@ -44,7 +44,7 @@ namespace SuperMarketSystem.Controllers
             var productResponse = await _context.Products.
                 Where(u => u.Quantity > 0 && (search == null || u.Name.Contains(search))).
                 Include(p => p.Brand).
-                Include(p => p.Category).
+                Include(p => p.Categories).
                 Select(u => _mapper.Map<CustomerProductDTO>(u)).
                 ToListAsync();
 
@@ -62,7 +62,7 @@ namespace SuperMarketSystem.Controllers
         public async Task<IActionResult> Product(int id)
         {
             var productResponse = await _context.Products.Include(p => p.Brand).
-                Include(p => p.Category).
+                Include(p => p.Categories).
                 Where(p => p.Id == id).
                 Select(u => _mapper.Map<CustomerProductDTO>(u)).
                 FirstOrDefaultAsync();

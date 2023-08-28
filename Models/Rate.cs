@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperMarketSystem.Models;
 
 public partial class Rate
 {
+    [Key]
     public int Id { get; set; }
 
     public sbyte Star { get; set; }

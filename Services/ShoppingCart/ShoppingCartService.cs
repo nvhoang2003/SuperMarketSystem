@@ -96,7 +96,7 @@ namespace SuperMarketSystem.Services.ShoppingCart
             await _context.SaveChangesAsync();
         }
 
-        public float GetShoppingCartTotal()
+        public decimal GetShoppingCartTotal()
         {
             var total = _context.ShoppingCartItems.Where(c => c.ItemId == ShoppingCartId)
                 .Select(c => c.Product.UnitCost * c.Quantity).Sum();

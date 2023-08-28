@@ -48,9 +48,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 builder.Services.AddTransient<IEmailService, EmailSender>();
+builder.Services.AddTransient<IAdminRepository, AdminRepository>();
 builder.Services.Configure<MessageOptions>(builder.Configuration.GetSection(nameof(MailSettings)));
-
-
 
 //Thay đổi thời gian chờ email và hoạt động 
 builder.Services.Configure<SecurityStampValidatorOptions>(o =>

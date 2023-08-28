@@ -38,12 +38,12 @@ namespace SuperMarketSystem.Repositories.Implements
 
         public async Task<IEnumerable<Product>> GetAllIncludedAsync()
         {
-            return await _context.Products.Include(p => p.Category).Include(p => p.Rates).ToListAsync();
+            return await _context.Products.Include(p => p.Categories).Include(p => p.Rates).ToListAsync();
         }
 
         public IEnumerable<Product> GetAllIncluded()
         {
-            return _context.Products.Include(p => p.Category).Include(p => p.Rates).ToList();
+            return _context.Products.Include(p => p.Categories).Include(p => p.Rates).ToList();
         }
 
         public Product GetById(int? id)
@@ -58,12 +58,12 @@ namespace SuperMarketSystem.Repositories.Implements
 
         public Product GetByIdIncluded(int? id)
         {
-            return _context.Products.Include(p => p.Category).Include(p => p.Rates).FirstOrDefault(p => p.Id == id);
+            return _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefault(p => p.Id == id);
         }
 
         public async Task<Product> GetByIdIncludedAsync(int? id)
         {
-            return await _context.Products.Include(p => p.Category).Include(p => p.Rates).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public bool Exists(int id)

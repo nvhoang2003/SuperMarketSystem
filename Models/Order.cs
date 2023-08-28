@@ -1,17 +1,22 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperMarketSystem.Models;
 
 public partial class Order
 {
-    public int Id { get; set; }
+    [Key]
+    public int OrderId { get; set; }
+
+    public List<OrderDetails> OrderLines { get; set; }
 
     public int CustomerId { get; set; }
 
     public DateTime DateOfPurchase { get; set; }
 
-    public float Amount { get; set; }
+    public decimal Amount { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 

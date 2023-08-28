@@ -70,6 +70,23 @@ namespace SuperMarketSystem.Controllers
             //_emailStore = GetEmailStore();            
         }
         #endregion
+        #region ManageProfile
+        [Authorize]
+        public IActionResult ManagerProfile()
+        {
+
+            var user = _userManager.GetUserAsync(User).Result;
+
+            var model = new ManageProfileViewModel
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+
+            return View(model);
+        }
+        #endregion
 
         #region Register
         [AllowAnonymous]

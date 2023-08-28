@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperMarketSystem.Models;
 
 public partial class Customer
 {
+    [Key]
     public int Id { get; set; }
 
-    public string FullName { get; set; }
+    public Guid CustomerCode { get; set; }
 
-    public string Street { get; set; }
+    public int CustomerInfoId { get; set; }
 
-    public string City { get; set; }
+    public virtual CustomerInfo CustomerInfo { get; set; }
 
-    public string State { get; set; }
+    public int CustomerAddressId { get; set; }
 
-    public string Country { get; set; }
+    public virtual CustomerAddress Address { get; set; }
 
-    public string PhoneNumber { get; set; }
-
-    public string CreditCardNumber { get; set; }
-
-    public DateTime CreditCardExpiry { get; set; }
     public virtual ICollection<ApplicationUser> Users { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
