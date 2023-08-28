@@ -1,6 +1,6 @@
 ﻿namespace SuperMarketSystem.Services.EmailService
 {
-    public class AuthMessageSenderOptions
+    public class MessageOptions
     {
 
         public string? DisplayName { get; set; }

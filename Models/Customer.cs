@@ -7,11 +7,7 @@ public partial class Customer
 {
     public int Id { get; set; }
 
-    public string FirstName { get; set; }
-
-    public string? MiddleName { get; set; }
-
-    public string LastName { get; set; }
+    public string FullName { get; set; }
 
     public string Street { get; set; }
 
@@ -26,6 +22,7 @@ public partial class Customer
     public string CreditCardNumber { get; set; }
 
     public DateTime CreditCardExpiry { get; set; }
+    public virtual ICollection<ApplicationUser> Users { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 

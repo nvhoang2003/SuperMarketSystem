@@ -117,12 +117,8 @@ namespace SuperMarketSystem.Controllers
                     _loggerRegister.LogInformation("Vừa tạo mới tài khoản thành công.");
 
                     // phát sinh token theo thông tin user để xác nhận email
-                    // mỗi user dựa vào thông tin sẽ có một mã riêng, mã này nhúng vào link
-                    // trong email gửi đi để người dùng xác nhận
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                    // callbackUrl = /Account/ConfirmEmail?userId=useridxx&code=codexxxx
                     // Link trong email người dùng bấm vào, nó sẽ gọi Page: /Acount/ConfirmEmail để xác nhận
                     var callbackUrl = Url.Action(
                      "ConfirmEmail",
@@ -135,8 +131,6 @@ namespace SuperMarketSystem.Controllers
                     await _userManager.AddToRoleAsync(user, "Customer");
                     if (!_userManager.Options.SignIn.RequireConfirmedEmail)
                     {
-                        // Nếu cấu hình phải xác thực email mới được đăng nhập thì chuyển hướng đến trang
-                        // RegisterConfirmation - chỉ để hiện thông báo cho biết người dùng cần mở email xác nhận
                         return RedirectToAction("RegisterConfirmation","Account", new { email = model.Input.Email});
                     }
                     else
@@ -146,7 +140,6 @@ namespace SuperMarketSystem.Controllers
                         return RedirectToAction("Index","Home");
                     }
                 }
-                // Có lỗi, đưa các lỗi thêm user vào ModelState để hiện thị ở html helpper: asp-validation-summary
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -583,6 +576,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         #endregion
+
         #region ExternalLoginCallback
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)

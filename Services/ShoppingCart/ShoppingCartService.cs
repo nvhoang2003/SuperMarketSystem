@@ -1,36 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SuperMarketSystem.Data;
-using System;
+using SuperMarketSystem.Models;
 
-namespace SuperMarketSystem.Models
+namespace SuperMarketSystem.Services.ShoppingCart
 {
-    public class ShoppingCart
+    public class ShoppingCartService
     {
-        private readonly MyDBContext _context;
-
-        private ShoppingCart(MyDBContext context)
+        public string ShoppingCartId { get; set; }
+        private readonly MyDBContext _context = new MyDBContext();
+        public const string CartSessionKey = "CartId";
+        private ShoppingCartService(MyDBContext context)
         {
             _context = context;
         }
-
-        public string ShoppingCartId { get; set; }
-
         public List<ShoppingCartItem> ShoppingCartItems { get; set; }
-
-
-        public static ShoppingCart GetCart(IServiceProvider services)
-        {
-            ISession session = services.GetRequiredService<IHttpContextAccessor>()?
-                .HttpContext.Session;
-
-            var context = services.GetService<MyDBContext>();
-            string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
-
-            session.SetString("CartId", cartId);
-
-            return new ShoppingCart(context) { ShoppingCartId = cartId };
-        }
 
         public async Task AddToCartAsync(Product product, int amount)
         {
@@ -54,10 +37,20 @@ namespace SuperMarketSystem.Models
             {
                 shoppingCartItem.Quantity++;
             }
-
             await _context.SaveChangesAsync();
         }
+        public static ShoppingCartService GetCart(IServiceProvider services)
+        {
+            ISession session = services.GetRequiredService<IHttpContextAccessor>()?
+                .HttpContext.Session;
 
+            var context = services.GetService<MyDBContext>();
+            string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
+
+            session.SetString("CartId", cartId);
+
+            return new ShoppingCartService(context) { ShoppingCartId = cartId };
+        }
         public async Task<int> RemoveFromCartAsync(Product product)
         {
             var shoppingCartItem =
@@ -83,7 +76,6 @@ namespace SuperMarketSystem.Models
 
             return localQuantity;
         }
-
         public async Task<List<ShoppingCartItem>> GetShoppingCartItemsAsync()
         {
             return ShoppingCartItems ??

@@ -1,5 +1,5 @@
-﻿#main {
-
+﻿
+#main {
     --nc-primary: #ee4d2d;
     --nc-primary-bg: #fef6f5;
     --nc-primary-gradient: linear-gradient(#ee4d2d,#ff7337);
@@ -135,51 +135,31 @@
     font-family: var(--nt-font-bold-f,-apple-system,'HelveticaNeue-Bold','Helvetica Neue','Roboto','Droid Sans','Arial Bold',Arial,sans-serif);
     font-weight: var(--nt-font-bold-w,700)
 }
-.body {
-    background-color: #fff;
-    min-width: 1200px;
-    min-height: 100vh;
-}
-.navbar {
-    height: 84px;
-    box-shadow: 0 6px 6px rgba(0,0,0,.06);
+#FORMCT {
+    background-color: hsl(218, 41%, 15%);
+    background-image: radial-gradient(650px circle at 0% 0%, hsl(218, 41%, 35%) 15%, hsl(218, 41%, 30%) 35%, hsl(218, 41%, 20%) 75%, hsl(218, 41%, 19%) 80%, transparent 100%), radial-gradient(1250px circle at 100% 100%, hsl(218, 41%, 45%) 15%, hsl(218, 41%, 30%) 35%, hsl(218, 41%, 20%) 75%, hsl(218, 41%, 19%) 80%, transparent 100%);
 }
 
-.navcontrol {
-    width: 1200px;
-    margin: 0 auto;
-}
-.navbrand {
-    font-size: 0;
-    text-decoration: none;
-    background-color: initial;
-}
-.title {
-    color: #222;
-    font-size: 1.5rem;
-}
-.item {
-    color: #ee4d2d;
-    font-size: .875rem;
-    margin-right: 15px;
-    cursor: pointer;
-}
-#form {
-    display: block;
-    margin-top: 0em;
-    width: 400px;
-    min-height: 482px;
-    background-color: #fff; 
-    box-sizing: border-box;
-    box-shadow: 0 3px 10px 0 rgba(0,0,0,.14);
-    border-radius: 4px;
+#radius-shape-1 {
+    height: 220px;
+    width: 220px;
+    top: -60px;
+    left: -130px;
+    background: radial-gradient(#44006b, #ad1fff);
     overflow: hidden;
-    width: 500px;
 }
-#control {
-    width: 100%; 
-    padding: 1.375rem 30px;
-    justify-content: space-between;
-    align-items: center;
-    display: flex;
+
+#radius-shape-2 {
+    border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
+    bottom: -60px;
+    right: -110px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(#44006b, #ad1fff);
+    overflow: hidden;
+}
+
+.bg-glass {
+    background-color: hsla(0, 0%, 100%, 0.9) !important;
+    backdrop-filter: saturate(200%) blur(25px);
 }

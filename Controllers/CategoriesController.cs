@@ -15,21 +15,25 @@ using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Controllers
 {
-    [Authorize(Roles = "Admin")]
-
     public class CategoriesController : Controller
     {
+        #region Fields
         private readonly MyDBContext _context;
         private readonly IMapper _mapper;
         private readonly ICategoryRepository _categoryrepository;
+        #endregion
 
+        #region Constructor
         public CategoriesController(MyDBContext context, IMapper mapper, ICategoryRepository categoryrepository)
         {
             _context = context;
             _mapper = mapper;
             _categoryrepository = categoryrepository;
         }
-        [Authorize(Roles = "Admin")]
+        #endregion
+
+        #region Index
+        [AllowAnonymous]
         // GET: Categories
         public async Task<IActionResult> Index()
         {
@@ -39,8 +43,11 @@ namespace SuperMarketSystem.Controllers
                         View(dbCategory) :
                         Problem("Entity set 'MyDBContext.Categories'  is null.");
         }
+        #endregion
 
+        #region Details
         // GET: Categories/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,16 +65,18 @@ namespace SuperMarketSystem.Controllers
 
             return View(categoryDTO);
         }
+        #endregion
 
+        #region Create
         // GET: Categories/Create
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCategoryDTO createCategoryDTO)
@@ -81,9 +90,11 @@ namespace SuperMarketSystem.Controllers
             }
             return View(createCategoryDTO);
         }
+        #endregion
 
+        #region Edit
         // GET: Categories/Edit/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,7 +115,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Categories/Edit/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( CategoryDTO categoryDTO)
@@ -120,10 +131,11 @@ namespace SuperMarketSystem.Controllers
             }
             return View(categoryDTO);
         }
+        #endregion
 
-        [HttpGet]
+        #region Delete
         // GET: Categories/Delete/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,7 +155,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Categories/Delete/5
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -161,9 +173,13 @@ namespace SuperMarketSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
+
+        #region Exitsts
         private bool CategoryExists(int id)
         {
             return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        #endregion
     }
 }

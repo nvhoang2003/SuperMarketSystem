@@ -9,35 +9,45 @@ using SuperMarketSystem.Data;
 using AutoMapper;
 using SuperMarketSystem.DTOs;
 using SuperMarketSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace SuperMarketSystem.Controllers
 {
     public class ProductsController : Controller
     {
+        #region Fields
         private readonly MyDBContext _context;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly ILogger<ProductsController> _logger;
+        #endregion
 
-        public ProductsController(MyDBContext context, IMapper mapper, IWebHostEnvironment hostEnvironment)
+        #region Constructor
+        public ProductsController(MyDBContext context, IMapper mapper, IWebHostEnvironment hostEnvironment, ILogger<ProductsController> logger)
         {
             _context = context;
             _mapper = mapper;
             _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
+        #endregion
 
-        // GET: Products
+        #region Index
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var productResponse = await _context.Products.Include(p => p.Brand).
                 Include(p => p.Category).
                 Select(u => _mapper.Map<ProductDTO>(u)).
                 ToListAsync();
-
-
             return View(productResponse);
         }
+        #endregion
 
+        #region Details
         // GET: Products/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Products == null)
@@ -61,8 +71,12 @@ namespace SuperMarketSystem.Controllers
                 return View(productRes);
             }
         }
+        #endregion
 
-        // GET: Products/Create
+        #region Create
+
+        // GET: Products/Create/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -70,9 +84,7 @@ namespace SuperMarketSystem.Controllers
             return View();
         }
 
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO createProductDTO)
@@ -80,31 +92,31 @@ namespace SuperMarketSystem.Controllers
             try
             {
                 Product product = _mapper.Map<Product>(createProductDTO);
-            _context.Add(product);
-            await _context.SaveChangesAsync();
+                _context.Add(product);
+                await _context.SaveChangesAsync();
 
-            List<Image> imgs = new List<Image>();
-            string wwwRootPath = _hostEnvironment.WebRootPath;
+                List<Image> imgs = new List<Image>();
+                string wwwRootPath = _hostEnvironment.WebRootPath;
 
-            foreach (var item in createProductDTO.ImageFile)
-            {
-                Image img = new Image();
-
-                string fileName = Path.GetFileNameWithoutExtension(item.FileName);
-                string extension = Path.GetExtension(item.FileName);
-                img.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                foreach (var item in createProductDTO.ImageFile)
                 {
-                    await item.CopyToAsync(fileStream);
+                    Image img = new Image();
+
+                    string fileName = Path.GetFileNameWithoutExtension(item.FileName);
+                    string extension = Path.GetExtension(item.FileName);
+                    img.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                    string path = Path.Combine(wwwRootPath + "/Image/", fileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await item.CopyToAsync(fileStream);
+                    }
+                    img.ProductId = product.Id;
+                    imgs.Add(img);
                 }
-                img.ProductId = product.Id;
-                imgs.Add(img);
-            }
-            //Insert record
-            _context.Images.AddRange(imgs);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                //Insert record
+                _context.Images.AddRange(imgs);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -113,8 +125,12 @@ namespace SuperMarketSystem.Controllers
                 return View(createProductDTO);
             }
         }
+        #endregion
+
+        #region Edit
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -140,9 +156,7 @@ namespace SuperMarketSystem.Controllers
             }
         }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO updateProductDTO)
@@ -150,9 +164,9 @@ namespace SuperMarketSystem.Controllers
             try
             {
                 Product product = _mapper.Map<Product>(updateProductDTO);
-                product.Id = id; 
+                product.Id = id;
                 _context.Update(product);
-                if(updateProductDTO.ImageFile != null)
+                if (updateProductDTO.ImageFile != null)
                 {
                     List<Image> imgsDelete = _context.Images.Where(i => i.ProductId == id).ToList();
                     _context.Images.RemoveRange(imgsDelete);
@@ -176,7 +190,7 @@ namespace SuperMarketSystem.Controllers
                     }
                     //Insert record
                     _context.Images.AddRange(imgs);
-                }    
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -188,7 +202,11 @@ namespace SuperMarketSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
@@ -212,6 +230,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // POST: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -227,14 +246,18 @@ namespace SuperMarketSystem.Controllers
                 _context.Images.RemoveRange(imgsDelete);
                 _context.Products.Remove(product);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Exists
+        [AllowAnonymous]
         private bool ProductExists(int id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        #endregion
     }
 }

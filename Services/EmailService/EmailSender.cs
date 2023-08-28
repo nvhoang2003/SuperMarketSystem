@@ -26,8 +26,8 @@ namespace SuperMarketSystem.Services.EmailService
     {
         private readonly ILogger _logger;
         public readonly IConfiguration _config;
-        public AuthMessageSenderOptions _Options { get; } //Set with Secret Manager.
-        public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
+        public MessageOptions _Options { get; } //Set with Secret Manager.
+        public EmailSender(IOptions<MessageOptions> optionsAccessor,
                            ILogger<EmailSender> logger,
                            IConfiguration config)
         {
@@ -97,30 +97,5 @@ namespace SuperMarketSystem.Services.EmailService
             }
             _logger.LogInformation("send mail to: " + toEmail);
         }
-
-        //public string GetEmailTemplate<T>(string emailTemplate, T emailTemplateModel)
-        //{
-        //    string mailTemplate = LoadTemplate(emailTemplate);
-
-        //    IRazorEngine razorEngine = new RazorEngineCore.RazorEngine();
-        //    IRazorEngineCompiledTemplate modifiedMailTemplate = razorEngine.Compile(mailTemplate);
-
-        //    return modifiedMailTemplate.Run(emailTemplateModel);
-        //}
-
-        //public string LoadTemplate(string emailTemplate)
-        //{
-        //    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        //    string templateDir = Path.Combine(baseDir, "Files/MailTemplates");
-        //    string templatePath = Path.Combine(templateDir, $"{emailTemplate}.cshtml");
-
-        //    using FileStream fileStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        //    using StreamReader streamReader = new StreamReader(fileStream, Encoding.Default);
-
-        //    string mailTemplate = streamReader.ReadToEnd();
-        //    streamReader.Close();
-
-        //    return mailTemplate;
-        //}
     }
 }

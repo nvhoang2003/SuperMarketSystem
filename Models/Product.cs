@@ -24,6 +24,8 @@ public class Product
     public int BrandId { get; set; }
 
     public virtual ICollection<Image> Image { get; set; } = new List<Image>();
+    public string ShoppingCartId { get; set; }
+    public virtual ICollection<ShoppingCartItem> ShoppingCartItems {get;set;}
 
     public virtual Category Category { get; set; }
 
