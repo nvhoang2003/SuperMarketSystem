@@ -9,9 +9,11 @@ using SuperMarketSystem.Data;
 using AutoMapper;
 using SuperMarketSystem.DTOs;
 using SuperMarketSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SuperMarketSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         private readonly MyDBContext _context;
@@ -26,6 +28,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Products
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var productResponse = await _context.Products.Include(p => p.Brand).
@@ -38,6 +41,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Products/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Products == null)
@@ -63,6 +67,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -75,6 +80,7 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO createProductDTO)
         {
             try
@@ -120,6 +126,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -150,6 +157,7 @@ namespace SuperMarketSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,BrandId,Quantity,UnitCost,ImageFile")] CreateProductDTO updateProductDTO)
         {
             try
@@ -194,6 +202,7 @@ namespace SuperMarketSystem.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
@@ -219,6 +228,7 @@ namespace SuperMarketSystem.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Products == null)
