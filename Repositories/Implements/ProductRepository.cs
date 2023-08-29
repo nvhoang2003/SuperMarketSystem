@@ -7,7 +7,6 @@ using System.Data;
 
 namespace SuperMarketSystem.Repositories.Implements
 {
-    [Authorize(Roles = "Admin")]
     public class ProductRepository
     {
         private readonly MyDBContext _context;
@@ -16,16 +15,11 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             _context = context;
         }
+        #region Get Top Product of The Week
+        public IEnumerable<Product> ProductOfTheWeek => _context.Products.Where(p => p.IsTopOfTheWeek).Include(p => p.Categories);
+        #endregion
 
-        //public IEnumerable<Product> Products => _context.Products.Include(p => p.Category).Include(p => p.Ra); //include here
-
-        //public IEnumerable<Product> ProductOfTheWeek => _context.Products.Where(p => p.).Include(p => p.Category);
-
-        public void Add(Product product)
-        {
-            _context.Add(product);
-        }
-
+        #region Get All
         public IEnumerable<Product> GetAll()
         {
             return _context.Products.ToList();
@@ -35,7 +29,9 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             return await _context.Products.ToListAsync();
         }
+        #endregion
 
+        #region Get All Include
         public async Task<IEnumerable<Product>> GetAllIncludedAsync()
         {
             return await _context.Products.Include(p => p.Categories).Include(p => p.Rates).ToListAsync();
@@ -45,37 +41,86 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             return _context.Products.Include(p => p.Categories).Include(p => p.Rates).ToList();
         }
+        #endregion
 
+        #region Get By Id
         public Product GetById(int? id)
         {
             return _context.Products.FirstOrDefault(p => p.Id == id);
         }
-
         public async Task<Product> GetByIdAsync(int? id)
         {
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
+        #endregion 
 
+        #region Get By Code
+        public Product GetByCode(Guid code)
+        {
+            return _context.Products.FirstOrDefault(p => p.ProductCode == code);
+        }
+        public async Task<Product> GetByCodeAsync(Guid code)
+        {
+            return await _context.Products.FirstOrDefaultAsync(p => p.ProductCode == code);
+        }
+        #endregion
+
+        #region Get By Id Include
         public Product GetByIdIncluded(int? id)
         {
             return _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefault(p => p.Id == id);
         }
-
         public async Task<Product> GetByIdIncludedAsync(int? id)
         {
             return await _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefaultAsync(p => p.Id == id);
         }
+        #endregion
 
-        public bool Exists(int id)
+        #region Get By Code Include
+
+        public Product GetByCodeIncluded(Guid code)
         {
-            return _context.Products.Any(p => p.Id == id);
+            return _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefault(p => p.ProductCode == code);
         }
+        public async Task<Product> GetByCodeIncludedAsync(Guid code)
+        {
+            return await _context.Products.Include(p => p.Categories).Include(p => p.Rates).FirstOrDefaultAsync(p => p.ProductCode == code);
+        }
+        #endregion
 
+        #region Create
+        public void Add(Product product)
+        {
+            _context.Add(product);
+        }
+        #endregion
+
+        #region Update
+        public void Update(Product product)
+        {
+            _context.Update(product);
+        }
+        #endregion
+
+        #region Delete
         public void Remove(Product product)
         {
             _context.Remove(product);
         }
+        #endregion
 
+        #region Exists
+        public bool Exists(int id)
+        {
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        public bool ExistsByCode(Guid code)
+        {
+            return (_context.Products?.Any(p => p.ProductCode == code)).GetValueOrDefault();
+        }
+        #endregion
+
+        #region Save Change
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
@@ -85,10 +130,6 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             _context.SaveChanges();
         }
-
-        public void Update(Product product)
-        {
-            _context.Update(product);
-        }
+        #endregion
     }
 }

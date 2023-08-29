@@ -13,24 +13,23 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             _context = context;
         }
-
+        #region Get Product Rates
         public IEnumerable<Rate> Rates => _context.Rates.Include(x => x.Product);
+        #endregion
 
-        public void Add(Rate review)
-        {
-            _context.Rates.Add(review);
-        }
-
+        #region Get All
         public IEnumerable<Rate> GetAll()
+
         {
             return _context.Rates.ToList();
         }
-
         public async Task<IEnumerable<Rate>> GetAllAsync()
         {
             return await _context.Rates.ToListAsync();
         }
+        #endregion
 
+        #region Get By Id
         public Rate GetById(int? id)
         {
             return _context.Rates.FirstOrDefault(p => p.Id == id);
@@ -40,17 +39,39 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             return await _context.Rates.FirstOrDefaultAsync(p => p.Id == id);
         }
+        #endregion
 
-        public bool Exists(int id)
+        #region Create
+        public void Add(Rate review)
         {
-            return _context.Rates.Any(p => p.Id == id);
+            _context.Rates.Add(review);
         }
+        #endregion
 
+        #region Update
+        public void Update(Rate review)
+        {
+            _context.Rates.Update(review);
+        }
+        #endregion
+
+        #region Delete
         public void Remove(Rate review)
         {
             _context.Rates.Remove(review);
         }
+        #endregion
 
+        #region Exists
+
+        public bool Exists(int id)
+        {
+            return (_context.Rates?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        #endregion
+
+        #region Save Change
         public void SaveChanges()
         {
             _context.SaveChanges();
@@ -60,10 +81,6 @@ namespace SuperMarketSystem.Repositories.Implements
         {
             await _context.SaveChangesAsync();
         }
-
-        public void Update(Rate review)
-        {
-            _context.Rates.Update(review);
-        }
+        #endregion
     }
 }

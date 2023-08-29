@@ -54,7 +54,7 @@ namespace SuperMarketSystem.Controllers
             {
                 return NotFound();
             }
-            var category = await _categoryrepository.GetById(id);
+            var category = await _categoryrepository.GetByIdAsync(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -102,7 +102,7 @@ namespace SuperMarketSystem.Controllers
                 return NotFound();
             }
 
-            var category = await _categoryrepository.GetById(id);
+            var category = await _categoryrepository.GetByIdAsync(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -143,7 +143,7 @@ namespace SuperMarketSystem.Controllers
                 return NotFound();
             }
 
-            var category = await _categoryrepository.GetById(id);
+            var category = await _categoryrepository.GetByIdAsync(id);
 
             CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
@@ -164,7 +164,7 @@ namespace SuperMarketSystem.Controllers
             {
                 return Problem("Entity set 'MyDBContext.Categories' is null.");
             }
-            var category = await _categoryrepository.GetById(id);
+            var category = await _categoryrepository.GetByIdAsync(id);
             if (category != null)
             {
                 _categoryrepository.Remove(category);

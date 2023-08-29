@@ -20,11 +20,11 @@
         @foreach (var line in Model.ShoppingCart.ShoppingCartItems)
         {
             <tr>
-                <td class="text-center"><a class="btn btn-default" asp-action="RemoveFromShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>-</b></a>          <b>@line.Quantity</b>          <a class="btn btn-default" asp-action="AddToShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>+</b></a></td>
+                <td class="text-center"><a class="btn btn-default" asp-action="RemoveFromShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>-</b></a>          <b>@line.Amount</b>          <a class="btn btn-default" asp-action="AddToShoppingCart" asp-route-pizzaId="@line.Product.Id"><b>+</b></a></td>
                 <td class="text-left">@line.Product.Name</td>
                 <td class="text-right">@line.Product.UnitCost.ToString("c")</td>
                 <td class="text-right">
-                    @((line.Quantity * line.Product.UnitCost).ToString("c"))
+                    @((line.Amount * line.Product.UnitCost).ToString("c"))
                 </td>
             </tr>
         }

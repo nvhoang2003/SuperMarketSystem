@@ -27,7 +27,7 @@ namespace SuperMarketSystem.Services.ShoppingCart
                 {
                     ItemId = ShoppingCartId,
                     Product = product,
-                    Quantity = 1,
+                    Amount = 1,
                     DateCreated = DateTime.UtcNow,
                 };
 
@@ -35,7 +35,7 @@ namespace SuperMarketSystem.Services.ShoppingCart
             }
             else
             {
-                shoppingCartItem.Quantity++;
+                shoppingCartItem.Amount++;
             }
             await _context.SaveChangesAsync();
         }
@@ -61,10 +61,10 @@ namespace SuperMarketSystem.Services.ShoppingCart
 
             if (shoppingCartItem != null)
             {
-                if (shoppingCartItem.Quantity > 1)
+                if (shoppingCartItem.Amount > 1)
                 {
-                    shoppingCartItem.Quantity--;
-                    localQuantity = shoppingCartItem.Quantity;
+                    shoppingCartItem.Amount--;
+                    localQuantity = shoppingCartItem.Amount;
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace SuperMarketSystem.Services.ShoppingCart
         public decimal GetShoppingCartTotal()
         {
             var total = _context.ShoppingCartItems.Where(c => c.ItemId == ShoppingCartId)
-                .Select(c => c.Product.UnitCost * c.Quantity).Sum();
+                .Select(c => c.Product.UnitCost * c.Amount).Sum();
             return total;
         }
     }

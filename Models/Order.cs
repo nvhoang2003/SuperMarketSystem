@@ -16,7 +16,7 @@ public partial class Order
 
     public DateTime DateOfPurchase { get; set; }
 
-    public decimal Amount { get; set; }
+    public decimal OrderTotal { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 

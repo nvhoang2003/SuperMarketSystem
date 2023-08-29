@@ -419,14 +419,14 @@ namespace SuperMarketSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfPurchase")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("OrderTotal")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
 
@@ -542,6 +542,9 @@ namespace SuperMarketSystem.Migrations
                     b.Property<string>("ItemId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<string>("CartId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -550,9 +553,6 @@ namespace SuperMarketSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("ItemId");

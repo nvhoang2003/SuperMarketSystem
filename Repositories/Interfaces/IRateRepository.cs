@@ -4,21 +4,26 @@ namespace SuperMarketSystem.Repositories.Interfaces
 {
     public interface IRateRepository
     {
-        IEnumerable<Rate> Rates { get; }
+        IEnumerable<Rate> Rates { get; } 
+
+        IEnumerable<Rate> GetAll();
+
+        Task<IEnumerable<Rate>> GetAllAsync();
 
         Rate GetById(int? id);
+
         Task<Rate> GetByIdAsync(int? id);
+
+        void Add(Rate rate);
+
+        void Update(Rate rate);
+            
+        void Remove(Rate rate);
 
         bool Exists(int id);
 
-        IEnumerable<Rate> GetAll();
-        Task<IEnumerable<Rate>> GetAllAsync();
-
-        void Add(Rate review);
-        void Update(Rate review);
-        void Remove(Rate review);
-
         void SaveChanges();
+
         Task SaveChangesAsync();
     }
 }

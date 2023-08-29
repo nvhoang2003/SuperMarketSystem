@@ -193,7 +193,7 @@ namespace SuperMarketSystem.Migrations
                 {
                     ItemId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CartId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -216,7 +216,7 @@ namespace SuperMarketSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     DateOfPurchase = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    OrderTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -6,7 +6,6 @@ namespace SuperMarketSystem.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
-         //Task<string> LoginAsync(ApplicationUser user);
          Task<IdentityResult> RegisterAsync(ApplicationUser user);
     }
 }
