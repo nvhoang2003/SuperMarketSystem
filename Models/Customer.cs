@@ -4,12 +4,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuperMarketSystem.Models;
 
-public partial class Customer
+public partial class Customer 
 {
     [Key]
     public int Id { get; set; }
 
     public Guid CustomerCode { get; set; }
+
+    public string UserId { get; set; }
+
+    public virtual ApplicationUser User { get; set; }
 
     public int CustomerInfoId { get; set; }
 
@@ -18,8 +22,6 @@ public partial class Customer
     public int CustomerAddressId { get; set; }
 
     public virtual CustomerAddress Address { get; set; }
-
-    public virtual ICollection<ApplicationUser> Users { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 

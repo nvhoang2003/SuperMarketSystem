@@ -34,9 +34,6 @@ namespace SuperMarketSystem.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -67,6 +64,10 @@ namespace SuperMarketSystem.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RoleType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -78,8 +79,6 @@ namespace SuperMarketSystem.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -326,11 +325,17 @@ namespace SuperMarketSystem.Migrations
                     b.Property<int>("CustomerInfoId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerAddressId");
 
                     b.HasIndex("CustomerInfoId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -562,17 +567,6 @@ namespace SuperMarketSystem.Migrations
                     b.ToTable("ShoppingCartItems");
                 });
 
-            modelBuilder.Entity("ApplicationUser", b =>
-                {
-                    b.HasOne("SuperMarketSystem.Models.Customer", "Customer")
-                        .WithMany("Users")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -657,9 +651,17 @@ namespace SuperMarketSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
 
                     b.Navigation("CustomerInfo");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Image", b =>
@@ -762,8 +764,6 @@ namespace SuperMarketSystem.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Rates");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SuperMarketSystem.Models.Order", b =>

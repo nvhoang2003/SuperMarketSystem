@@ -78,8 +78,8 @@ namespace SuperMarketSystem.Services.EmailService
                         msg.Body = builder.ToMessageBody();
                         // Gửi email
                         await smtpclient.SendAsync(msg);
-                        // Tạm dừng 1 giây
-                        Thread.Sleep(1000);
+                        //// Tạm dừng 1 giây
+                        //Thread.Sleep(1000);
                     }
                     // Ngắt kết nối
                     await smtpclient.DisconnectAsync(true);

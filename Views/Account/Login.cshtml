@@ -1,6 +1,7 @@
 ﻿@model SuperMarketSystem.ViewModels.AccountViewModel.LoginViewModel
 @{
     ViewData["Title"] = "Log in";
+    Layout = null;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -120,7 +121,7 @@
                 </div>
             </div>
         </footer>
-        @section Scripts{
+        @*@section Scripts{
             @RenderSection("Scripts", required: false)
             <script>
                 $(function () {
@@ -133,7 +134,7 @@
                     })
                 })
             </script>
-        }
+        }*@
     </div>
 </body>
 </html>

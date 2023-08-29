@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using MimeKit;
 using SuperMarketSystem.Services.EmailService;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
+using SuperMarketSystem.Repositories.Interfaces;
+using SuperMarketSystem.Models;
 
 namespace SuperMarketSystem.Controllers
 {
@@ -38,6 +40,7 @@ namespace SuperMarketSystem.Controllers
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailService _emailSender;
         private readonly IMapper _mapper;
+        private readonly ICustomerRepository _customerRepository;
 
         #endregion
 
@@ -52,8 +55,9 @@ namespace SuperMarketSystem.Controllers
                                 ILogger<LoginWithRecoveryCodeModel> loggerLoginWithRecoveryCode,
                                 ILogger<LogoutModel> loggerLockout,
                                 IUserStore<ApplicationUser> userStore,
-                                IEmailService emailSender,                              
-                                 IMapper mapper)
+                                IEmailService emailSender,
+                                IMapper mapper,
+                                ICustomerRepository customerRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -67,7 +71,7 @@ namespace SuperMarketSystem.Controllers
             _emailSender = emailSender;
             _mapper = mapper;
             _userStore = userStore;
-            //_emailStore = GetEmailStore();            
+            _customerRepository = customerRepository;
         }
         #endregion
         #region ManageProfile
@@ -111,12 +115,19 @@ namespace SuperMarketSystem.Controllers
             if (ModelState.IsValid)
             {
                 // Tạo ApplicationUser sau đó tạo User mới (cập nhật vào db)
-                var user = new ApplicationUser { UserName = model.Input.Email, Email = model.Input.Email, PhoneNumber = model.Input.PhoneNumber};
+                var user = new ApplicationUser { UserName = model.Input.Email, Email = model.Input.Email, PhoneNumber = model.Input.PhoneNumber, RoleType = "Customer" };
                 var result = await _userManager.CreateAsync(user, model.Input.Password);
 
                 if (result.Succeeded)
                 {
                     _loggerRegister.LogInformation("Vừa tạo mới tài khoản thành công.");
+                    // Tạo thông tin khách hàng
+                    var customer = new Customer
+                    {
+                        CustomerCode = Guid.NewGuid(),
+                        UserId = user.Id,
+                    };
+                    _customerRepository.Add(customer);
 
                     // phát sinh token theo thông tin user để xác nhận email
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -128,25 +139,25 @@ namespace SuperMarketSystem.Controllers
                      new { userId = user.Id, code = code },
                      protocol: Request.Scheme);
                     // Gửi email    
-                    await _emailSender.SendEmailAsync(model.Input.Email,  "Xác nhận địa chỉ email",
+                    await _emailSender.SendEmailAsync(model.Input.Email, "Xác nhận địa chỉ email",
                         $"Hãy xác nhận địa chỉ email bằng cách <a href='{callbackUrl}'>Bấm vào đây</a>.");
                     await _userManager.AddToRoleAsync(user, "Customer");
                     if (!_userManager.Options.SignIn.RequireConfirmedEmail)
                     {
-                        return RedirectToAction("RegisterConfirmation","Account", new { email = model.Input.Email});
+                        return RedirectToAction("RegisterConfirmation", "Account", new { email = model.Input.Email });
                     }
                     else
                     {
                         // Không cần xác thực - đăng nhập luôn
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Index","Home");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                
+
             }
             return View(model);
         }
@@ -156,7 +167,7 @@ namespace SuperMarketSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RegisterConfirmation(string email)
         {
-              if (email == null)
+            if (email == null)
             {
                 return RedirectToAction("Register", "Account");
             }
@@ -208,7 +219,7 @@ namespace SuperMarketSystem.Controllers
         {
             if (userId == null || email == null || code == null)
             {
-                return RedirectToAction("Manager","Account");
+                return RedirectToAction("Manager", "Account");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -317,12 +328,12 @@ namespace SuperMarketSystem.Controllers
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToAction("ResetPasswordConfirmation","Account");
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.Input.Code,  model.Input.Password);
+            var result = await _userManager.ResetPasswordAsync(user, model.Input.Code, model.Input.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation","Account");
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             foreach (var error in result.Errors)
             {
@@ -361,7 +372,7 @@ namespace SuperMarketSystem.Controllers
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction("ForgotPasswordConfirmation","Account");
+                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
                 }
                 // For more information on how to enable account confirmation and password reset please
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -375,7 +386,7 @@ namespace SuperMarketSystem.Controllers
                     model.Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                return RedirectToAction("ForgotPasswordConfirmation","Account");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
             return View(model);
         }
@@ -489,7 +500,7 @@ namespace SuperMarketSystem.Controllers
             else if (result.IsLockedOut)
             {
                 _loggerWith2fa.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
-                return RedirectToAction("Lockout","Account");
+                return RedirectToAction("Lockout", "Account");
             }
             else
             {
@@ -546,7 +557,7 @@ namespace SuperMarketSystem.Controllers
             if (result.IsLockedOut)
             {
                 _loggerLoginWithRecoveryCode.LogWarning("User account locked out.");
-                return RedirectToAction("Lockout","Account");
+                return RedirectToAction("Lockout", "Account");
             }
             else
             {
@@ -570,7 +581,7 @@ namespace SuperMarketSystem.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Login","Account");
+            if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Login", "Account");
 
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             _loggerLogout.LogInformation("Người dùng đăng xuất");
@@ -591,7 +602,6 @@ namespace SuperMarketSystem.Controllers
 
         #endregion
 
-        #region ExternalLoginCallback
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
         {
@@ -599,33 +609,76 @@ namespace SuperMarketSystem.Controllers
 
             if (info == null)
             {
-                // Handle the case where external login info is not available
-                return RedirectToAction("Login");
+                ModelState.AddModelError(string.Empty, "Error loading external login information during confirmation.");
+                return RedirectToAction("Login", "Account", new { ReturnUrl = returnUrl });
             }
 
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
             if (result.Succeeded)
             {
-                // User is successfully authenticated, redirect to the desired page
-                if (!string.IsNullOrEmpty(returnUrl))
-                {
-                    return LocalRedirect(returnUrl);
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                _loggerExternalLogin.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                return HandleSuccessfulLogin(returnUrl);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction("Lockout", "Account");
+            }
+
+            return await HandleExternalLoginFailure(info, returnUrl);
+        }
+
+        private IActionResult HandleSuccessfulLogin(string returnUrl)
+        {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
             }
             else
             {
-                // The user does not have an account or other login failure, handle as needed
-                ViewData["ReturnUrl"] = returnUrl;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel
-                {
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                });
+                return RedirectToAction("Index", "Home");
             }
+        }
+
+        private async Task<IActionResult> HandleExternalLoginFailure(ExternalLoginInfo info, string returnUrl)
+        {
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var existingUser = await _userManager.FindByEmailAsync(email);
+
+            if (existingUser == null)
+            {
+                return await CreateUserAndSignIn(info, returnUrl);
+            }
+
+            return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+        }
+
+        private async Task<IActionResult> CreateUserAndSignIn(ExternalLoginInfo info, string returnUrl)
+        {
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = new ApplicationUser { UserName = email, Email = email, RoleType = "Customer" };
+            var createUserResult = await _userManager.CreateAsync(user);
+
+            if (createUserResult.Succeeded)
+            {
+                var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                if (addLoginResult.Succeeded)
+                {
+                    var customer = new Customer
+                    {
+                        UserId = user.Id,
+                        CustomerCode = Guid.NewGuid(),
+                    };
+                    _customerRepository.Add(customer);
+                    await _customerRepository.SaveChangesAsync();
+                    await _signInManager.SignInAsync(user, isPersistent: true);
+                    return HandleSuccessfulLogin(returnUrl);
+                }
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View("ExternalLoginFailure");
         }
 
         [HttpPost]
@@ -637,23 +690,24 @@ namespace SuperMarketSystem.Controllers
             {
                 var info = await _signInManager.GetExternalLoginInfoAsync();
 
-                if (info == null)
+                if (info != null)
                 {
                     // Handle the case where external login info is not available
                     return RedirectToAction("Login");
                 }
 
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-
                 var result = await _userManager.CreateAsync(user);
 
                 if (result.Succeeded)
                 {
+                    var customer = new Customer { UserId = user.Id };
+                    _customerRepository.Add(customer);
                     result = await _userManager.AddLoginAsync(user, info);
 
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _signInManager.SignInAsync(user, isPersistent: true);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -673,7 +727,6 @@ namespace SuperMarketSystem.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-        #endregion
     }
 }
 
