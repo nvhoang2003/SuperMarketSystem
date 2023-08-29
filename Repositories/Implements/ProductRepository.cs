@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using SuperMarketSystem.Data;
 using SuperMarketSystem.Models;
+using SuperMarketSystem.Repositories.Interfaces;
 using System;
 using System.Data;
 
 namespace SuperMarketSystem.Repositories.Implements
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly MyDBContext _context;
 
@@ -17,6 +18,8 @@ namespace SuperMarketSystem.Repositories.Implements
         }
         #region Get Top Product of The Week
         public IEnumerable<Product> ProductOfTheWeek => _context.Products.Where(p => p.IsTopOfTheWeek).Include(p => p.Categories);
+
+        public IEnumerable<Product> IsProductOfTheWeek => throw new NotImplementedException();
         #endregion
 
         #region Get All

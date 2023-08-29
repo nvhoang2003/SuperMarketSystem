@@ -9,7 +9,7 @@ namespace SuperMarketSystem.Services.ShoppingCart
         public string ShoppingCartId { get; set; }
         private readonly MyDBContext _context = new MyDBContext();
         public const string CartSessionKey = "CartId";
-        private ShoppingCartService(MyDBContext context)
+        public ShoppingCartService(MyDBContext context)
         {
             _context = context;
         }

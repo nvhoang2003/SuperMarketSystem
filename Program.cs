@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DotNetEnv;
 using SuperMarketSystem.Services.EmailService;
 using Microsoft.Extensions.Options;
+using SuperMarketSystem.Services.ShoppingCart;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -46,9 +47,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 //Đăng kí 
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 builder.Services.AddTransient<IEmailService, EmailSender>();
+builder.Services.AddTransient<ShoppingCartService>();
 builder.Services.AddTransient<IAdminRepository, AdminRepository>();
 builder.Services.Configure<MessageOptions>(builder.Configuration.GetSection(nameof(MailSettings)));
 
