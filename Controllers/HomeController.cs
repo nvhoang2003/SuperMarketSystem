@@ -61,17 +61,23 @@ namespace SuperMarketSystem.Controllers
         [HttpGet("/Home/Product/{id}")]
         public async Task<IActionResult> Product(int id)
         {
+
             var productResponse = await _context.Products.Include(p => p.Brand).
                 Include(p => p.Categories).
                 Where(p => p.Id == id).
                 Select(u => _mapper.Map<CustomerProductDTO>(u)).
                 FirstOrDefaultAsync();
-
+            if(productResponse == null)
+            {
+                return RedirectToAction("Index");
+            }
             int numberOfRate = _context.Rates.Where(r => r.ProductId == id).Count();
 
-            productResponse.ImageName = _context.Images.Where(c => c.ProductId == id).Select(i => i.ImageName).ToList();
-            productResponse.RateStar = numberOfRate == 0 ? 0 : _context.Rates.Where(r => r.ProductId == id).Sum(r => r.Star) / numberOfRate;
-            //productResponse.NumberOfOrder = _context.Orders.Where(o => o.)
+            productResponse.ImageName = _context.Images.Where(c => c.ProductId == id)?.Select(i => i.ImageName)?.ToList();
+            productResponse.RateStar = (float)(numberOfRate == 0 ? 0 : _context.Rates.Where(r => r.ProductId == id).Sum(r => r.Star) / numberOfRate);
+            //Lưu ý phải thay Giá trị thật
+            productResponse.NumberOfOrder = 100;
+            productResponse.NumberOfRate = numberOfRate;
 
             return View(productResponse);
         }

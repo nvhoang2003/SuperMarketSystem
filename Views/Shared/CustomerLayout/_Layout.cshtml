@@ -32,7 +32,7 @@
 </html>
 
 <script>
-    var averageRating = 4.5;
+    var averageRating = parseFloat($("#averageRating").data("average-rating"));
 
     var starRating = Math.floor(averageRating);
     var hasHalfStar = Math.round(averageRating) !== starRating; 
@@ -52,4 +52,20 @@
 
     // Hiển thị số điểm trung bình
     $("#averageRating").text(averageRating);
+
+    function decreaseValue() {
+        var valueField = document.getElementById("valueField");
+        var value = parseInt(valueField.value);
+        value = value - 1 < 0 ? 0 : value -1;
+        valueField.value = value;
+    }
+
+    function increaseValue() {
+        var valueField = document.getElementById("valueField");
+        var value = parseInt(valueField.value);
+        var maxValue = parseInt(valueField.getAttribute("max"));
+
+        value = value + 1 > maxValue ? maxValue : value + 1;
+        valueField.value = value;
+    }
 </script>

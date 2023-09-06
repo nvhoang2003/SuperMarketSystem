@@ -11,7 +11,7 @@ namespace SuperMarketSystem.DTOs
         public int Id { get; set; }
 
         [StringLength(100, MinimumLength = 2)]
-        [RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
+       // [RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
         [DataType(DataType.Text)]
         [Required]
         public string Name { get; set; }
@@ -24,8 +24,7 @@ namespace SuperMarketSystem.DTOs
         [Precision(18, 2)]
         public float UnitCost { get; set; }
 
-        [DisplayName("Select Category")]
-        public virtual Category Category { get; set; }
+        public virtual Category Categories { get; set; }
 
         public virtual Brand Brand { get; set; }
 
@@ -44,8 +43,10 @@ namespace SuperMarketSystem.DTOs
         [Required]
         public float UnitCost { get; set; }
         [Required]
+        [DisplayName("Select Category")]
         public virtual int CategoryId { get; set; }
         [Required]
+        [DisplayName("Select Brand")]
         public virtual int BrandId { get; set; }
 
         [NotMapped]
@@ -70,10 +71,10 @@ namespace SuperMarketSystem.DTOs
 
         public string Name { get; set; }
 
-
+        public int Quantity { get; set; }
         public float UnitCost { get; set; }
 
-        public virtual Category Category { get; set; }
+        public virtual Category Categories { get; set; }
 
         public virtual Brand Brand { get; set; }
 
@@ -82,6 +83,8 @@ namespace SuperMarketSystem.DTOs
         public int NumberOfOrder { get; set; }
 
         public float RateStar { get; set; }
+
+        public float NumberOfRate { get; set; }
 
         public virtual ICollection<Rate> Rates { get; set; } = new List<Rate>();
     }

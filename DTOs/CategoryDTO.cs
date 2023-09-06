@@ -8,7 +8,7 @@ namespace SuperMarketSystem.DTOs
         public int Id { get; set; }
 
         [StringLength(100, MinimumLength = 2)]
-        [RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
+        //[RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
         [DataType(DataType.Text)]
         [Required]
         public string Name { get; set; }
@@ -23,7 +23,7 @@ namespace SuperMarketSystem.DTOs
     public class CreateCategoryDTO
     {
         [StringLength(100, MinimumLength = 2)]
-        [RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
+        //[RegularExpression("([a-zA-Z0-9 .&'-]+)", ErrorMessage = "The field Name should only include letters and number.")]
         [DataType(DataType.Text)]
         [Required]
         public string Name { get; set; }
