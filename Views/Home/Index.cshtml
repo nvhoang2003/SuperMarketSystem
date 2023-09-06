@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/CustomerLayout/_Layout.cshtml";
 }
 
-<div class="row m-5">
+@*<div class="row m-5">
     @foreach(var item in Model)
     {
         <div class="card col-2" style="width: 18rem;">
@@ -16,7 +16,7 @@
                 <p class="card-text">Category: @item.Category.Name</p>
                 <p class="card-text">Price: @item.UnitCost $</p>
 
-                @* <p>
+                 <p>
                     Rate: <span id="averageRating">
                        
                     </span><br/>
@@ -26,12 +26,12 @@
                     <span class="star {@item.Id}">&#9733;</span>
                     <span class="star {@item.Id}">&#9733;</span>
                 </p>
- *@
+ 
                 <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
     }
-</div>
+</div>*@
 
 <style>
     .star {

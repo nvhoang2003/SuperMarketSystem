@@ -18,6 +18,7 @@ using DotNetEnv;
 using SuperMarketSystem.Services.EmailService;
 using Microsoft.Extensions.Options;
 using SuperMarketSystem.Services.ShoppingCart;
+using SuperMarketSystem.Services.SeedDataService;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -54,6 +55,7 @@ builder.Services.AddTransient<IEmailService, EmailSender>();
 builder.Services.AddTransient<ShoppingCartService>();
 builder.Services.AddTransient<IAdminRepository, AdminRepository>();
 builder.Services.Configure<MessageOptions>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.AddScoped<SeedDataService>();
 
 //Thay đổi thời gian chờ email và hoạt động 
 builder.Services.Configure<SecurityStampValidatorOptions>(o =>
@@ -181,40 +183,13 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-//Tao role và tai khoan adm neu chua co
 
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "Customer" };
-    var services = scope.ServiceProvider;
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
-    }
-}
-//using (var scope = app.Services.CreateScope())
-//{
-//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-//    string email = "admin123@gmail.com";
-//    string password = configuration["SeedUserPW"];
-//    if (await userManager.FindByEmailAsync(email) == null)
-//    {
-//        var user = new ApplicationUser()
-//        {
-//            UserName = email,
-//            Email = email,
-//            EmailConfirmed = true,
-//            PhoneNumberConfirmed = true,
-//        };
-//        var userResult = await userManager.CreateAsync(user, password);
+    var seedDataService = scope.ServiceProvider.GetRequiredService<SeedDataService>();
 
-//        if (userResult.Succeeded)
-//        {
-//            await userManager.AddToRoleAsync(user, "Admin");
-//        }
-//    }
-//}
+    await seedDataService.SeedRolesAsync();
+    await seedDataService.SeedAdminUserAsync();
+}
 
 app.Run();

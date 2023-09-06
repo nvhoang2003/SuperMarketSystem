@@ -49,7 +49,6 @@
 	<ItemGroup>
 		<Folder Include="Areas\Identity\User\" />
 		<Folder Include="Controllers\" />
-		<Folder Include="Data\" />
 		<Folder Include="Data\Migrations\" />
 		<Folder Include="Migrations\" />
 		<Folder Include="wwwroot\images\" />

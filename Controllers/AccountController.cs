@@ -74,6 +74,7 @@ namespace SuperMarketSystem.Controllers
             _customerRepository = customerRepository;
         }
         #endregion
+
         #region ManageProfile
         [Authorize]
         public IActionResult ManagerProfile()
@@ -602,6 +603,8 @@ namespace SuperMarketSystem.Controllers
 
         #endregion
 
+        #region ExternalLoginCallback
+
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
         {
@@ -680,7 +683,9 @@ namespace SuperMarketSystem.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View("ExternalLoginFailure");
         }
+        #endregion
 
+        #region ExternalLoginConfirm
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -719,6 +724,9 @@ namespace SuperMarketSystem.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
+        #endregion
+
+        #region Error
         [AllowAnonymous]
         private void AddErrors(IdentityResult result)
         {
@@ -727,6 +735,7 @@ namespace SuperMarketSystem.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
+        #endregion
     }
 }
 

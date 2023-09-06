@@ -125,8 +125,7 @@ namespace SuperMarketSystem.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
-                    IsTopOfTheWeek = table.Column<bool>(type: "bit", nullable: false),
-                    ShoppingCartId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IsTopOfTheWeek = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,7 +12,7 @@ using SuperMarketSystem.Data;
 namespace SuperMarketSystem.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230829081641_CreateDB")]
+    [Migration("20230904140057_CreateDB")]
     partial class CreateDB
     {
         /// <inheritdoc />
@@ -499,10 +499,6 @@ namespace SuperMarketSystem.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("ShoppingCartId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("UnitCost")
                         .HasColumnType("decimal(18,2)");
 
@@ -747,7 +743,7 @@ namespace SuperMarketSystem.Migrations
             modelBuilder.Entity("SuperMarketSystem.Models.ShoppingCartItem", b =>
                 {
                     b.HasOne("SuperMarketSystem.Models.Product", "Product")
-                        .WithMany("ShoppingCartItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -781,8 +777,6 @@ namespace SuperMarketSystem.Migrations
                     b.Navigation("Image");
 
                     b.Navigation("Rates");
-
-                    b.Navigation("ShoppingCartItems");
                 });
 #pragma warning restore 612, 618
         }
